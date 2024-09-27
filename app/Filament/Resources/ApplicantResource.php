@@ -14,11 +14,14 @@ use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Section;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\Section as InfolistSection; // Correct Infolist Section import
+use Filament\Forms\Components\Section;
+use Filament\Tables\Filters\SelectFilter;
 
 class ApplicantResource extends Resource
 {
@@ -134,15 +137,23 @@ class ApplicantResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('Firstname')->label('First Name'),
-                TextColumn::make('Lastname')->label('Last Name'),
-                TextColumn::make('Email')->label('Email'),
-                TextColumn::make('branch.branchname')->label('Branch'),
+                TextColumn::make('Firstname')
+                ->label('First Name')
+                ->searchable()
+                ->sortable(),
+                TextColumn::make('Lastname')->label('Last Name')
+                ->searchable()
+                ->sortable(),
+                TextColumn::make('Email')->label('Email')->searchable()
+                ->sortable(),
+                TextColumn::make('branch.branchname')->label('Branch')->searchable()
+                ->sortable(),
             ])
             ->filters([
-                //
+              
             ])
             ->actions([
+                ViewAction::make(),
                 EditAction::make(),
             ])
             ->bulkActions([
@@ -155,17 +166,22 @@ class ApplicantResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
+        
             ->schema([
-                Section::make('Applicant Information')
+                InfolistSection::make('Applicant Information')
                     ->schema([
-                        TextEntry::make('branch.branchname')->label('Branch'), // Corrected line
-                        TextEntry::make('Firstname')->label('First Name'),
-                        TextEntry::make('Lastname')->label('Last Name'),
-                        TextEntry::make('Email')->label('Email'),
-                    ]),
+                        TextEntry::make('branch.branchname') // Displaying the branch name
+                            ->label('Branch'),
+                        TextEntry::make('Firstname')
+                            ->label('First Name'),
+                        TextEntry::make('Lastname')
+                            ->label('Last Name'),
+                        TextEntry::make('Email')
+                            ->label('Email'),
+                    ])
+                    ->columns(2), // Ensure 'columns' is lowercase
             ]);
     }
-
     public static function getRelations(): array
     {
         return [
