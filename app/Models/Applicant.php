@@ -30,6 +30,10 @@ class Applicant extends Model
         'Password',
         'branch_id'
     ];
+    public function getFullNameAttribute()
+    {
+        return "{$this->Firstname} {$this->Middleinitial} {$this->Lastname}";
+    }
 
     // Define the relationship with the Branch model
     public function branch()
@@ -47,5 +51,9 @@ class Applicant extends Model
     public function educationalAttainments()
     {
         return $this->hasMany(EducationalAttainment::class);
+    }
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
     }
 }

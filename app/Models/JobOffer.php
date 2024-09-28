@@ -8,13 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class JobOffer extends Model
 {
     use HasFactory;
-    protected $fillable=[
+    protected $fillable = [
         'job',
         'status',
         'country_id'
     ];
+    public function getJobWithCountryAttribute()
+    {
+        return "{$this->Job} - {$this->country->name}";
+    }
     public function country()
     {
         return $this->belongsTo(country::class);
+    }
+    public function applications()
+    {
+        return $this->hasMany(Application::class);
     }
 }
