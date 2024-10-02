@@ -19,7 +19,7 @@ class ApplicantPolicy
      */
     public function view(User $user, Applicant $applicant): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
     }
 
     /**
@@ -27,7 +27,7 @@ class ApplicantPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
     }
 
     /**
@@ -35,7 +35,7 @@ class ApplicantPolicy
      */
     public function update(User $user, Applicant $applicant): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();
     }
 
     /**

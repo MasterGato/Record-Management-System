@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class Applicant extends Model
 {
@@ -30,8 +32,29 @@ class Applicant extends Model
         'Password',
         'branch_id'
     ];
-    public function getFullNameAttribute()
+    
+    protected static function booted()
     {
+        static::addGlobalScope('branch', function (Builder $builder) {
+            // Ensure the user is authenticated
+            if (Auth::check()) {
+                $user = Auth::user();
+    
+                // Check if the user is an admin
+                if ($user->role === 'ADMIN') {
+                    // Admin users should see all data, no scope applied
+                    return;
+                }
+    
+                // Non-admin users only see data related to their branch
+                $builder->where('branch_id', $user->branch_id);
+            }
+        });
+    }
+    
+    public function getFullNameAttribute(): string
+    {
+        // Use trim to avoid extra spaces if Middleinitial is empty
         return "{$this->Firstname} {$this->Middleinitial} {$this->Lastname}";
     }
 

@@ -21,6 +21,8 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup ='User Management';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
@@ -57,14 +59,14 @@ class UserResource extends Resource
                 Select::make('role') // Corrected method
                     ->options(User::ROLES) // Make sure User::ROLES is defined properly
                     ->required(),
-                Forms\Components\TextInput::make('status')
-                    ->required()
-                    ->maxLength(255),
                 Select::make('branch_id')
                     ->label('Branch')
                     ->options(Branch::pluck('branchname', 'id')->toArray()) // Use 'id' for branch ID
                     ->native(false)
                     ->required(),
+                Forms\Components\TextInput::make('status')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -87,15 +89,12 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('branch.branchname')->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('role')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('status')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('branch.branchname')->searchable()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -106,7 +105,7 @@ class UserResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

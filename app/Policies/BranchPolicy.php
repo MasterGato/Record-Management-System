@@ -13,7 +13,7 @@ class BranchPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -21,7 +21,7 @@ class BranchPolicy
      */
     public function view(User $user, Branch $branch): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -29,7 +29,7 @@ class BranchPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -37,7 +37,7 @@ class BranchPolicy
      */
     public function update(User $user, Branch $branch): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -45,7 +45,7 @@ class BranchPolicy
      */
     public function delete(User $user, Branch $branch): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -53,7 +53,7 @@ class BranchPolicy
      */
     public function restore(User $user, Branch $branch): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -61,6 +61,6 @@ class BranchPolicy
      */
     public function forceDelete(User $user, Branch $branch): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 }

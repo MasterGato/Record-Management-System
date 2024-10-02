@@ -149,6 +149,7 @@ class ApplicantResource extends Resource
                 TextColumn::make('branch.branchname')->label('Branch')->searchable()
                 ->sortable(),
             ])
+            
             ->filters([
               
             ])

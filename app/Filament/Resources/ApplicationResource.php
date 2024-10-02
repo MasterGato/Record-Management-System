@@ -9,6 +9,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
 
 class ApplicationResource extends Resource
 {
@@ -27,23 +29,21 @@ class ApplicationResource extends Resource
                         'newapplicant' => 'New Applicant',
                         'returnee' => 'Returnee',
                     ])
-                    ->required(), // Mark as required
-
-                // Ensure relationships and fields are referenced correctly
-                Forms\Components\Select::make('applicant_id')
-                    ->relationship('applicant', 'Firstname') // Adjusted casing
                     ->required(),
 
-                Forms\Components\Select::make('job_offer_id') // Consistent naming
-                    ->relationship('jobOffer', 'Job') // Adjusted casing
+                Forms\Components\Select::make('applicant_id')
+                    ->relationship('applicant', 'Firstname')
+                    ->required(),
+
+                Forms\Components\Select::make('job_offer_id')
+                    ->relationship('jobOffer', 'Job')
                     ->required(),
 
                 Forms\Components\Select::make('branch_id')
                     ->relationship('branch', 'branchname')
                     ->required(),
 
-                Forms\Components\TextInput::make('status')->default('pending')->required(),
-                
+                // Removed status field
                 Forms\Components\DatePicker::make('Dateofapplication')
                     ->default(now())
                     ->required(),
@@ -55,15 +55,68 @@ class ApplicationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('Typeofapplication'),
-                Tables\Columns\TextColumn::make('applicant.Firstname'), // Ensure this matches the relationship name
-                Tables\Columns\TextColumn::make('jobOffer.Job'), // Ensure this matches the relationship name
-                Tables\Columns\TextColumn::make('branch.branchname'), // Ensure this matches the relationship name
-                Tables\Columns\TextColumn::make('status'),
+                Tables\Columns\TextColumn::make('applicant.Firstname'),
+                Tables\Columns\TextColumn::make('jobOffer.Job'),
+                Tables\Columns\TextColumn::make('branch.branchname'),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->formatStateUsing(function (Application $record) {
+                        return match ($record->status) {
+                            'pending' => 'Pending',
+                            'approved' => 'Approved',
+                            'rejected' => 'Rejected',
+                            default => 'Unknown',
+                        };
+                    }),
                 Tables\Columns\TextColumn::make('Dateofapplication'),
-                // Remove this line if `application_date` is not a valid column
-                // Tables\Columns\TextColumn::make('application_date'),
             ])
-            ->filters([]);
+            ->actions([
+                Action::make('approve')
+                    ->label('Approve')
+                    ->icon('heroicon-o-check-circle')
+                    ->color('success')
+                    ->action(function (Application $record) {
+                        $record->update(['status' => 'approved']);
+                    })
+                    ->requiresConfirmation()
+                    ->visible(fn(Application $record) => $record->status === 'pending'),
+
+                Action::make('reject')
+                    ->label('Reject')
+                    ->icon('heroicon-o-x-circle')
+                    ->color('danger')
+                    ->action(function (Application $record) {
+                        $record->applicant->delete(); // Soft deletes the applicant and related records
+                    })
+                    ->requiresConfirmation()
+                    ->visible(fn(Application $record) => $record->status === 'pending'),
+
+
+                Action::make('restore')
+                    ->label('Restore')
+                    ->icon('heroicon-o-arrow-narrow-up')
+                    ->color('primary')
+                    ->action(function (Application $record) {
+                        $record->restore(); // Restores the application
+                    })
+                    ->requiresConfirmation()
+                    ->visible(fn(Application $record) => $record->trashed()), // Only visible for trashed records
+            ])
+            ->filters([
+                Tables\Filters\Filter::make('trashed')
+                    ->label('Show Deleted Applications')
+                    ->query(fn($query) => $query->onlyTrashed()), // Only show soft-deleted records
+            ])
+            ->bulkActions([
+                BulkAction::make('deleteSelected') // Define bulk action correctly
+                    ->label('Delete Selected')
+                    ->action(function (array $records) {
+                        foreach ($records as $record) {
+                            $record->delete(); // Soft deletes the selected applications
+                        }
+                    })
+                    ->requiresConfirmation(),
+            ]);
     }
 
     public static function getRelations(): array

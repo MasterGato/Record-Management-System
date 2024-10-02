@@ -21,7 +21,7 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $application): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
     }
 
     /**
@@ -29,7 +29,7 @@ class ApplicationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
     }
 
     /**
@@ -37,7 +37,7 @@ class ApplicationPolicy
      */
     public function update(User $user, Application $application): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
     }
 
     /**

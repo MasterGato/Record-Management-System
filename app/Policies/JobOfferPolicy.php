@@ -13,7 +13,7 @@ class JobOfferPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -21,7 +21,7 @@ class JobOfferPolicy
      */
     public function view(User $user, JobOffer $jobOffer): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -29,7 +29,7 @@ class JobOfferPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -37,7 +37,7 @@ class JobOfferPolicy
      */
     public function update(User $user, JobOffer $jobOffer): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -45,7 +45,7 @@ class JobOfferPolicy
      */
     public function delete(User $user, JobOffer $jobOffer): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 
     /**
@@ -53,7 +53,7 @@ class JobOfferPolicy
      */
     public function restore(User $user, JobOffer $jobOffer): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin() ;
     }
 
     /**
@@ -61,6 +61,6 @@ class JobOfferPolicy
      */
     public function forceDelete(User $user, JobOffer $jobOffer): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk();
+        return $user->isAdmin();
     }
 }
