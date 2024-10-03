@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Tables;
 use Illuminate\Support\Facades\Storage;
 use App\Rules\CorrectFileName;
+use App\Models\Applicant;
 
 class DocumentResource extends Resource
 {
@@ -22,8 +23,10 @@ class DocumentResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('applicant_id')
-                    ->label('Applicant')
-                    ->relationship('applicant', 'Firstname'), // Adjust to your full name accessor
+                ->label('Applicant')
+                ->options(fn() => Applicant::all()->pluck('full_name', 'id')) // Get all applicants and use their full name
+                ->required()
+                ->searchable(),
 
 
                 // File uploads for each document with custom validation
@@ -86,7 +89,7 @@ class DocumentResource extends Resource
                         'completed' => 'Completed',
                     ])
                     ->default('pending')
-                    ->disabled(), // The status will be automatically updated
+                     // The status will be automatically updated
             ]);
     }
 
@@ -96,6 +99,8 @@ class DocumentResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('applicant.Firstname')->label('Applicant')->searchable()->sortable(),
+
+
                 Tables\Columns\TextColumn::make('valid_id')
                     ->label('Valid ID')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME)) // Show only the filename
@@ -141,7 +146,7 @@ class DocumentResource extends Resource
                 Tables\Actions\EditAction::make(),
             ]);
     }
-    
+
     public static function getMessages(): array
     {
         return [

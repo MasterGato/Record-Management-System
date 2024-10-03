@@ -1,66 +1,24 @@
 <?php
 
-// app/Models/Application.php
-
-// app/Models/Application.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Database\Eloquent\Builder;
 
 class Application extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'Typeofapplication',
-        'Dateofapplication',
-        'Controlnumber',
-        'status',
         'applicant_id',
-        'branch_id',
         'job_offer_id',
+        'branch_id',
+        'Dateofapplication',
+        'Controlnumber', // Ensure this field exists
+        'status', // Ensure this field exists
     ];
-    protected static function booted()
-{
-    static::addGlobalScope('branch', function (Builder $builder) {
-        // Ensure the user is authenticated
-        if (Auth::check()) {
-            $user = Auth::user();
-
-            // Check if the user is an admin
-            if ($user->role === 'ADMIN') {
-                // Admin users should see all data, no scope applied
-                return;
-            }
-
-            // Non-admin users only see data related to their branch
-            $builder->where('branch_id', $user->branch_id);
-        }
-    });
-}
-
-
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::deleting(function ($applicant) {
-            // Soft delete related work experiences
-            $applicant->workExperiences()->each(function ($workExperience) {
-                $workExperience->delete();
-            });
-
-            // Soft delete related educational attainments
-            $applicant->educationalAttainments()->each(function ($educationalAttainment) {
-                $educationalAttainment->delete();
-            });
-        });
-    }
+    
 
     public function applicant()
     {
@@ -75,5 +33,10 @@ class Application extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class); // Establish the relationship to the Document model
     }
 }

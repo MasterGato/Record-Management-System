@@ -13,7 +13,7 @@ class ApplicationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();
+        return   $user->isManager() ||$user->isClerk();
     }
 
     /**
@@ -21,7 +21,7 @@ class ApplicationPolicy
      */
     public function view(User $user, Application $application): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
+        return   $user->isManager() ||$user->isClerk();
     }
 
     /**
@@ -29,7 +29,7 @@ class ApplicationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
+        return  $user->isManager() ||$user->isClerk();
     }
 
     /**
@@ -37,7 +37,7 @@ class ApplicationPolicy
      */
     public function update(User $user, Application $application): bool
     {
-        return $user->isAdmin() ||  $user->isManager() ||$user->isClerk()||$user->isApplicant();;
+        return  $user->isManager() ||$user->isClerk();
     }
 
     /**
@@ -45,7 +45,7 @@ class ApplicationPolicy
      */
     public function delete(User $user, Application $application): bool
     {
-        return $user->isAdmin() ||  $user->isManager();
+        return $user->isManager();
     }
 
     /**
@@ -53,7 +53,7 @@ class ApplicationPolicy
      */
     public function restore(User $user, Application $application): bool
     {
-        return $user->isAdmin() ||  $user->isManager();
+        return  $user->isManager();
     }
 
     /**
@@ -61,6 +61,6 @@ class ApplicationPolicy
      */
     public function forceDelete(User $user, Application $application): bool
     {
-        return $user->isAdmin() ||  $user->isManager();
+        return  $user->isManager();
     }
 }

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ApplicationResource\Pages;
 use App\Models\Application;
+use App\Models\Applicant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -11,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Infolists\Infolist;
 
 class ApplicationResource extends Resource
 {
@@ -31,9 +33,12 @@ class ApplicationResource extends Resource
                     ])
                     ->required(),
 
+                // Use a custom query for the applicant select
                 Forms\Components\Select::make('applicant_id')
-                    ->relationship('applicant', 'Firstname')
-                    ->required(),
+                    ->label('Applicant')
+                    ->options(fn() => Applicant::all()->pluck('full_name', 'id')) // Get all applicants and use their full name
+                    ->required()
+                    ->searchable(),
 
                 Forms\Components\Select::make('job_offer_id')
                     ->relationship('jobOffer', 'Job')
@@ -47,6 +52,13 @@ class ApplicationResource extends Resource
                 Forms\Components\DatePicker::make('Dateofapplication')
                     ->default(now())
                     ->required(),
+
+                // Control Number input that appears when status is 'completed'
+                Forms\Components\TextInput::make('Controlnumber')
+                    ->label('Control Number')
+                    ->required()
+                    ->visible(fn(?Application $record): bool => $record?->status === 'completed') // Only show when status is completed
+                    ->maxLength(255),
             ]);
     }
 
@@ -55,7 +67,14 @@ class ApplicationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('Typeofapplication'),
-                Tables\Columns\TextColumn::make('applicant.Firstname'),
+                // Combine Firstname and Lastname into one column for Full Name
+                Tables\Columns\TextColumn::make('applicant.fullname')
+                    ->label('Full Name')
+                    ->formatStateUsing(function ($state, Application $record) {
+                        return $record->applicant->Firstname . ' ' . $record->applicant->Lastname;
+                    })
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('jobOffer.Job'),
                 Tables\Columns\TextColumn::make('branch.branchname'),
                 Tables\Columns\TextColumn::make('status')
@@ -64,11 +83,13 @@ class ApplicationResource extends Resource
                         return match ($record->status) {
                             'pending' => 'Pending',
                             'approved' => 'Approved',
+                            'completed' => 'Completed',
                             'rejected' => 'Rejected',
                             default => 'Unknown',
                         };
                     }),
                 Tables\Columns\TextColumn::make('Dateofapplication'),
+                Tables\Columns\TextColumn::make('Controlnumber'),
             ])
             ->actions([
                 Action::make('approve')
@@ -91,32 +112,9 @@ class ApplicationResource extends Resource
                     ->requiresConfirmation()
                     ->visible(fn(Application $record) => $record->status === 'pending'),
 
-
-                Action::make('restore')
-                    ->label('Restore')
-                    ->icon('heroicon-o-arrow-narrow-up')
-                    ->color('primary')
-                    ->action(function (Application $record) {
-                        $record->restore(); // Restores the application
-                    })
-                    ->requiresConfirmation()
-                    ->visible(fn(Application $record) => $record->trashed()), // Only visible for trashed records
             ])
-            ->filters([
-                Tables\Filters\Filter::make('trashed')
-                    ->label('Show Deleted Applications')
-                    ->query(fn($query) => $query->onlyTrashed()), // Only show soft-deleted records
-            ])
-            ->bulkActions([
-                BulkAction::make('deleteSelected') // Define bulk action correctly
-                    ->label('Delete Selected')
-                    ->action(function (array $records) {
-                        foreach ($records as $record) {
-                            $record->delete(); // Soft deletes the selected applications
-                        }
-                    })
-                    ->requiresConfirmation(),
-            ]);
+            ->filters([])
+            ->bulkActions([]);
     }
 
     public static function getRelations(): array

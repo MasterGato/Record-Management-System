@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Application;
+use Illuminate\Support\Facades\Log;
 
 class Document extends Model
 {
@@ -22,35 +24,6 @@ class Document extends Model
         'status',
     ];
 
-
-    public function checkCompletion(): void
-    {
-        $requiredFiles = [
-            'valid_id',
-            'birth_certificate',
-            'medical_certificate',
-            'nbi_clearance',
-            'passport',
-        ];
-
-        $allFilesUploaded = true;
-
-        foreach ($requiredFiles as $file) {
-            if (empty($this->$file)) {  // This ensures both null and empty values are handled
-                $allFilesUploaded = false;
-                break;
-            }
-        }
-
-        // If all required files are uploaded, set status to 'completed'
-        if ($allFilesUploaded) {
-            $this->update(['status' => 'completed']);
-        } else {
-            // Optionally, set it back to 'pending' if not all files are uploaded
-            $this->update(['status' => 'pending']);
-        }
-    }
-
     public function applicant(): BelongsTo
     {
         return $this->belongsTo(Applicant::class);
@@ -61,4 +34,26 @@ class Document extends Model
      *
      * @return bool
      */
+    protected static function booted()
+    {
+        static::updated(function ($document) {
+
+            // Check if the status is 'completed'
+            if ($document->status === 'completed') {
+                Log::info('Document status updated to completed', [
+                    'document_id' => $document->status,
+                    'applicant_id' => $document->applicant_id
+                ]);
+
+                // Get the applicant's application(s)
+                $applications = Application::where('applicant_id', $document->applicant_id) // Onlys assign control numbers to applications that don't have one yet
+                    ->first();
+
+
+                $applications->update([
+                    'status' => 'completed', // Optionally, update application status too
+                ]);
+            }
+        });
+    }
 }

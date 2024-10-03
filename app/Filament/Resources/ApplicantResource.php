@@ -134,36 +134,42 @@ class ApplicantResource extends Resource
     }
 
     public static function table(Table $table): Table
-    {
-        return $table
-            ->columns([
-                TextColumn::make('Firstname')
-                ->label('First Name')
+{
+    return $table
+        ->columns([
+            // Combine Firstname and Lastname into one column for Full Name
+            TextColumn::make('fullname')
+                ->label('Full Name')
+                ->formatStateUsing(function ($state, Applicant $record) {
+                    return $record->Firstname . ' ' . $record->Lastname;
+                })
+                ->sortable()
+                ->searchable(),
+                
+            TextColumn::make('Email')
+                ->label('Email')
                 ->searchable()
                 ->sortable(),
-                TextColumn::make('Lastname')->label('Last Name')
+                
+            TextColumn::make('branch.branchname')
+                ->label('Branch')
                 ->searchable()
                 ->sortable(),
-                TextColumn::make('Email')->label('Email')->searchable()
-                ->sortable(),
-                TextColumn::make('branch.branchname')->label('Branch')->searchable()
-                ->sortable(),
-            ])
-            
-            ->filters([
-              
-            ])
-            ->actions([
-                ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
+        ])
+        
+        ->filters([
+            // Add filters if needed
+        ])
+        ->actions([
+            ViewAction::make(),
+            EditAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                DeleteBulkAction::make(),
+            ]),
+        ]);
+}
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist

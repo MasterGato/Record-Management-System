@@ -18,13 +18,18 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->generateChartData(Branch::count())),
-            
+
             Stat::make('Applicants', Applicant::count())
                 ->description('Number of Applicants')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->generateChartData(Applicant::count())),
-            
+
+            Stat::make('Applications', Application::count())
+                ->description('Number of Applications')
+                ->descriptionIcon('heroicon-m-arrow-trending-up')
+                ->color('success')
+                ->chart($this->generateChartData(Application::count())),
             Stat::make('Applications', Application::count())
                 ->description('Number of Applications')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
