@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ApplicationResource\Pages;
 use App\Models\Application;
 use App\Models\Applicant;
+use App\Models\JobOffer;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,6 +14,9 @@ use Filament\Tables\Table;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ApplicationResource extends Resource
 {
@@ -58,7 +62,21 @@ class ApplicationResource extends Resource
                     ->label('Control Number')
                     ->required()
                     ->visible(fn(?Application $record): bool => $record?->status === 'completed') // Only show when status is completed
-                    ->maxLength(255),
+                    ->maxLength(7)
+                    ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                        // Check if control number is entered and current status is 'completed'
+                        if (!empty($state) && $get('status') === 'completed') {
+                            // Update status to 'hired'
+                            $set('status', 'hired');
+
+                            // Notify user of status update
+                            Notification::make()
+                                ->title('Status Updated')
+                                ->success()
+                                ->body('The application status has been updated to Hired.')
+                                ->send();
+                        }
+                    }),
             ]);
     }
 
@@ -67,7 +85,6 @@ class ApplicationResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('Typeofapplication'),
-                // Combine Firstname and Lastname into one column for Full Name
                 Tables\Columns\TextColumn::make('applicant.fullname')
                     ->label('Full Name')
                     ->formatStateUsing(function ($state, Application $record) {
@@ -84,6 +101,7 @@ class ApplicationResource extends Resource
                             'pending' => 'Pending',
                             'approved' => 'Approved',
                             'completed' => 'Completed',
+                            'hired' => 'Hired',
                             'rejected' => 'Rejected',
                             default => 'Unknown',
                         };
@@ -107,14 +125,24 @@ class ApplicationResource extends Resource
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->action(function (Application $record) {
+                        // Soft delete the application
+                        $record->delete();
                         $record->applicant->delete(); // Soft deletes the applicant and related records
                     })
                     ->requiresConfirmation()
                     ->visible(fn(Application $record) => $record->status === 'pending'),
-
             ])
-            ->filters([])
+            ->filters([
+                Tables\Filters\TrashedFilter::make(),
+            ])
             ->bulkActions([]);
+    }
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     public static function getRelations(): array

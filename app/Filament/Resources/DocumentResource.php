@@ -16,7 +16,7 @@ use App\Models\Applicant;
 class DocumentResource extends Resource
 {
     protected static ?string $model = Document::class;
-    protected static ?string $navigationIcon = 'heroicon-o-document';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?int $navigationSort = 8;
     public static function form(Form $form): Form
     {
@@ -86,6 +86,7 @@ class DocumentResource extends Resource
                     ->label('Status')
                     ->options([
                         'pending' => 'Pending',
+                        'rejected' => 'Rejected',
                         'completed' => 'Completed',
                     ])
                     ->default('pending')
