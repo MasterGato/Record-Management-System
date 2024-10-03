@@ -21,21 +21,34 @@ class Document extends Model
         'description',
         'status',
     ];
-    
-    
 
-    public function checkCompletion()
+
+    public function checkCompletion(): void
     {
-        // Check if all required documents are uploaded (marriage_certificate is optional)
-        $allDocumentsUploaded = $this->valid_id &&
-                                 $this->birth_certificate &&
-                                 $this->medical_certificate &&
-                                 $this->nbi_clearance &&
-                                 $this->passport;
+        $requiredFiles = [
+            'valid_id',
+            'birth_certificate',
+            'medical_certificate',
+            'nbi_clearance',
+            'passport',
+        ];
 
-        // Update the status based on the document checks
-        $this->status = $allDocumentsUploaded ? 'completed' : 'pending';
-        $this->save(); // Save the model with the updated status
+        $allFilesUploaded = true;
+
+        foreach ($requiredFiles as $file) {
+            if (empty($this->$file)) {  // This ensures both null and empty values are handled
+                $allFilesUploaded = false;
+                break;
+            }
+        }
+
+        // If all required files are uploaded, set status to 'completed'
+        if ($allFilesUploaded) {
+            $this->update(['status' => 'completed']);
+        } else {
+            // Optionally, set it back to 'pending' if not all files are uploaded
+            $this->update(['status' => 'pending']);
+        }
     }
 
     public function applicant(): BelongsTo
@@ -48,5 +61,4 @@ class Document extends Model
      *
      * @return bool
      */
-    
 }

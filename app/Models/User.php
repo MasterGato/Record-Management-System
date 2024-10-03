@@ -11,6 +11,10 @@ use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
 {
+
+   const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive'; 
+  
     const ROLE_ADMIN = 'ADMIN';
     const ROLE_MANAGER = 'MANAGER';
     const ROLE_CLERK = 'CLERK';
@@ -27,6 +31,10 @@ class User extends Authenticatable implements FilamentUser
         self::ROLE_APPLICANT => 'Applicant',
         self::ROLE_USER => 'User'
     ];
+    public function isActive(): bool // Method to check if user is active
+    {
+        return $this->status === self::STATUS_ACTIVE;
+    }
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->isAdmin() || $this->isManager() ||  $this->isApplicant()||  $this->isUser()||  $this->isClerk();

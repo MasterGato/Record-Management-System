@@ -29,7 +29,7 @@ class BranchResource extends Resource
             Forms\Components\TextInput::make('Branchname')
                 ->label('Branch Name')
                 ->required(),
-               
+
             Select::make('Region')
                 ->label('Region')
                 ->options([
@@ -114,6 +114,7 @@ class BranchResource extends Resource
                 Tables\Actions\ForceDeleteAction::make(),
                 Tables\Actions\RestoreAction::make(),
                 Tables\Actions\EditAction::make(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

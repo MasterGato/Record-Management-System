@@ -10,6 +10,11 @@ class EditApplicant extends EditRecord
 {
     protected static string $resource = ApplicantResource::class;
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+    
     protected function getHeaderActions(): array
     {
         return [
