@@ -26,11 +26,11 @@ class BranchResource extends Resource
     {
         return $form
         ->schema([
-            Forms\Components\TextInput::make('Branchname')
+            Forms\Components\TextInput::make('branchname')
                 ->label('Branch Name')
                 ->required(),
 
-            Select::make('Region')
+            Select::make('region')
                 ->label('Region')
                 ->options([
                     'region 12' => 'Region 12',
@@ -40,10 +40,10 @@ class BranchResource extends Resource
                 ->afterStateUpdated(fn(callable $set) => $set('selectedProvince', null)) // Reset province when region changes
                 ->afterStateUpdated(fn(callable $set) => $set('selectedCity', null)), // Reset city when region changes,
 
-            Select::make('Province')
+            Select::make('province')
                 ->label('Province')
                 ->options(function (callable $get) {
-                    $region = $get('Region');
+                    $region = $get('region');
                     if ($region === 'region 12') {
                         return [
                             'south Cotabato' => 'South Cotabato',
@@ -61,10 +61,10 @@ class BranchResource extends Resource
                 ->afterStateUpdated(fn(callable $set) => $set('selectedCity', null)) // Reset city when province changes
                 ->required(),
 
-            Select::make('City')
+            Select::make('city')
                 ->label('City')
                 ->options(function (callable $get) {
-                    $province = $get('Province');
+                    $province = $get('province');
                     if ($province === 'south Cotabato') {
                         return [
                             'koronadal' => 'Koronadal',

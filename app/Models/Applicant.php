@@ -45,19 +45,19 @@ class Applicant extends Model
             // Ensure the user is authenticated
             if (Auth::check()) {
                 $user = Auth::user();
-
-                // Check if the user is an admin
-                if ($user->role === 'ADMIN') {
-                    // Admin users should see all data, no scope applied
+    
+                // Check if the user is an admin or manager
+                if ($user->role === 'ADMIN' || $user->role === 'MANAGER') {
+                    // Admin and Manager users should see all data, no scope applied
                     return;
                 }
-
+    
                 // Non-admin users only see data related to their branch
                 $builder->where('branch_id', $user->branch_id);
             }
         });
     }
-
+    
 
     // Define the relationship with the Branch model
     public function branch()

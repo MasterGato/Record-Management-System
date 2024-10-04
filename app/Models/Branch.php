@@ -9,10 +9,10 @@ class Branch extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'Branchname',
-        'Region',
-        'Province',
-        'City'
+        'branchname',
+        'region',
+        'province',
+        'city'
     ];
     public function applications()
     {

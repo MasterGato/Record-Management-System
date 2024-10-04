@@ -36,6 +36,9 @@ class ApplicantResource extends Resource
             ->schema([
                 Section::make('Applicant Information')
                     ->schema([
+                        TextInput::make('name')
+                            ->label('Username')
+                            ->required(),
                         // Branch selection (relationship with the Branch model)
                         Select::make('branch_id')
                             ->label('Branch')
@@ -98,7 +101,7 @@ class ApplicantResource extends Resource
                     ->schema([
                         // Educational Attainment (Repeatable field)
                         Repeater::make('educationalAttainments')
-                            ->label('Educational Attainments')
+                            ->label('Educational Attainments & Work Experiences')
                             ->relationship()
                             ->schema([
                                 TextInput::make('Level')
@@ -134,46 +137,51 @@ class ApplicantResource extends Resource
     }
 
     public static function table(Table $table): Table
-{
-    return $table
-        ->columns([
-            // Combine Firstname and Lastname into one column for Full Name
-            TextColumn::make('fullname')
-                ->label('Full Name')
-                ->formatStateUsing(function ($state, Applicant $record) {
-                    return $record->Firstname . ' ' . $record->Lastname;
-                })
-                ->sortable()
-                ->searchable(),
-                
-            TextColumn::make('Email')
-                ->label('Email')
-                ->searchable()
-                ->sortable(),
-                
-            TextColumn::make('branch.branchname')
-                ->label('Branch')
-                ->searchable()
-                ->sortable(),
-        ])
-        
-        ->filters([
-            // Add filters if needed
-        ])
-        ->actions([
-            ViewAction::make(),
-            EditAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                DeleteBulkAction::make(),
-            ]),
-        ]);
-}
+    {
+        return $table
+            ->columns([
+                // Combine Firstname and Lastname into one column for Full Name
+                TextColumn::make('fullname')
+                    ->label('Full Name')
+                    ->formatStateUsing(function ($state, Applicant $record) {
+                        return $record->Firstname . ' ' . $record->Lastname;
+                    })
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('Email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('branch.branchname')
+                    ->label('Branch')
+                    ->searchable()
+                    ->sortable(),
+                    
+                TextColumn::make('branch.branchname')
+                    ->label('Branch')
+                    ->searchable()
+                    ->sortable(),
+            ])
+
+            ->filters([
+                // Add filters if needed
+            ])
+            ->actions([
+                ViewAction::make(),
+                EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-        
+
             ->schema([
                 InfolistSection::make('Applicant Information')
                     ->schema([

@@ -30,11 +30,11 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->generateChartData(Application::count())),
-            Stat::make('Applications', Application::count())
-                ->description('Number of Applications')
+            Stat::make('Hired Applicants', Application::where('status', 'hired')->count())
+                ->description('Number of Hired Applicants')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart($this->generateChartData(Application::count())),
+                ->chart($this->generateChartData(Application::where('status', 'hired')->count())),
         ];
     }
 

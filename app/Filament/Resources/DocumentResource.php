@@ -18,49 +18,49 @@ class DocumentResource extends Resource
     protected static ?string $model = Document::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?int $navigationSort = 8;
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('applicant_id')
-                ->label('Applicant')
-                ->options(fn() => Applicant::all()->pluck('full_name', 'id')) // Get all applicants and use their full name
-                ->required()
-                ->searchable(),
-
+                    ->label('Applicant')
+                    ->options(fn() => Applicant::whereHas('applications', function ($query) {
+                        $query->where('status', 'approved'); // Only select applicants with approved applications
+                    })->get()->mapWithKeys(function ($applicant) {
+                        return [$applicant->id => $applicant->Firstname . ' ' . $applicant->Lastname]; // Concatenate first and last name
+                    }))
+                    ->required()
+                    ->searchable(),
 
                 // File uploads for each document with custom validation
                 Forms\Components\FileUpload::make('valid_id')
                     ->label('Valid ID')
-
                     ->disk('public')
                     ->directory('documents/valid_id')
                     ->preserveFilenames()
-                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('valid_id')]), // Custom validation rule
+                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('valid_id')]),
 
                 Forms\Components\FileUpload::make('birth_certificate')
                     ->label('Birth Certificate')
-
                     ->disk('public')
                     ->directory('documents/birth_certificate')
                     ->preserveFilenames()
-                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('birth_certificate')]), // Custom validation rule
+                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('birth_certificate')]),
 
                 Forms\Components\FileUpload::make('medical_certificate')
                     ->label('Medical Certificate')
-
                     ->disk('public')
                     ->directory('documents/medical_certificate')
                     ->preserveFilenames()
-                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('medical_certificate')]), // Custom validation rule
+                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('medical_certificate')]),
 
                 Forms\Components\FileUpload::make('nbi_clearance')
                     ->label('NBI Clearance')
-
                     ->disk('public')
                     ->directory('documents/nbi_clearance')
                     ->preserveFilenames()
-                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('nbi_clearance')]), // Custom validation rule
+                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('nbi_clearance')]),
 
                 Forms\Components\FileUpload::make('marriage_certificate')
                     ->label('Marriage Certificate')
@@ -68,15 +68,14 @@ class DocumentResource extends Resource
                     ->directory('documents/marriage_certificate')
                     ->nullable()
                     ->preserveFilenames()
-                    ->rules(['file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('marriage_certificate')]), // Custom validation rule
+                    ->rules(['file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('marriage_certificate')]),
 
                 Forms\Components\FileUpload::make('passport')
                     ->label('Passport')
-
                     ->disk('public')
                     ->directory('documents/passport')
                     ->preserveFilenames()
-                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('passport')]), // Custom validation rule
+                    ->rules(['required', 'file', 'max:5120', 'mimes:jpg,jpeg,png,pdf', new CorrectFileName('passport')]),
 
                 Forms\Components\Textarea::make('description')
                     ->label('Description')
@@ -89,8 +88,7 @@ class DocumentResource extends Resource
                         'rejected' => 'Rejected',
                         'completed' => 'Completed',
                     ])
-                    ->default('pending')
-                     // The status will be automatically updated
+                    ->default('pending'),
             ]);
     }
 
@@ -99,45 +97,59 @@ class DocumentResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('applicant.Firstname')->label('Applicant')->searchable()->sortable(),
-
-
+                // Add the document ID column here
+                Tables\Columns\TextColumn::make('id')
+                    ->label('Document ID')  // Set the label for the column
+                    ->sortable()  // Allows sorting by this column
+                    ->searchable(),  // Allows searching by this column
+    
+                Tables\Columns\TextColumn::make('applicant.Firstname')
+                    ->label('Applicant')
+                    ->searchable()
+                    ->sortable(),
+    
                 Tables\Columns\TextColumn::make('valid_id')
                     ->label('Valid ID')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME)) // Show only the filename
                     ->url(fn($record) => $record->valid_id ? Storage::url($record->valid_id) : null)
                     ->html() // Allows HTML rendering
                     ->formatStateUsing(fn($state, $record) => $record->valid_id ? '<a href="' . Storage::url($record->valid_id) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
+                    
                 Tables\Columns\TextColumn::make('birth_certificate')
                     ->label('Birth Certificate')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->birth_certificate ? Storage::url($record->birth_certificate) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->birth_certificate ? '<a href="' . Storage::url($record->birth_certificate) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
+                    
                 Tables\Columns\TextColumn::make('medical_certificate')
                     ->label('Medical Certificate')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->medical_certificate ? Storage::url($record->medical_certificate) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->medical_certificate ? '<a href="' . Storage::url($record->medical_certificate) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
+                    
                 Tables\Columns\TextColumn::make('nbi_clearance')
                     ->label('NBI Clearance')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->nbi_clearance ? Storage::url($record->nbi_clearance) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->nbi_clearance ? '<a href="' . Storage::url($record->nbi_clearance) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
+                    
                 Tables\Columns\TextColumn::make('marriage_certificate')
                     ->label('Marriage Certificate')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->marriage_certificate ? Storage::url($record->marriage_certificate) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->marriage_certificate ? '<a href="' . Storage::url($record->marriage_certificate) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
+                    
                 Tables\Columns\TextColumn::make('passport')
                     ->label('Passport')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->passport ? Storage::url($record->passport) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->passport ? '<a href="' . Storage::url($record->passport) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
+                    
                 Tables\Columns\TextColumn::make('status')->label('Status'),
             ])
             ->filters([
