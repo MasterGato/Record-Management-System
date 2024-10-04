@@ -9,13 +9,15 @@ class ApplicationController extends Controller
     // Show the form
     public function showForm()
     {
-        return view('application-form');
+        return view('welcome');
     }
 
     // Handle form submission
     public function submitForm(Request $request)
+
     {
-        // Validate the form inputs
+
+
         $validatedData = $request->validate([
             'applicantType' => 'required|string',
             'branch' => 'required|string',

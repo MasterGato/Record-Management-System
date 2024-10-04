@@ -4,9 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ApplicationController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('', [ApplicationController::class, 'showForm']);
+Route::post('submitForm', [ApplicationController::class, 'submitForm'])->name('submitForm');
 Route::get('/applicants-report', [ReportsController::class, 'generateApplicantsReport']);
 
 Route::get('/hired-applicants-report', [ReportsController::class, 'generateHiredApplicantsReport']);
