@@ -68,14 +68,14 @@
                         <div>
                             <label for="Firstame" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
                                 name</label>
-                            <input type="text" name="Firstname" id="Firstname"
+                            <input type="text" id="Firstname"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="First Name" required />
                         </div>
                         <div>
                             <label for="Lastname" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
                                 name</label>
-                            <input type="text" name="Lastname" id="Lastname"
+                            <input type="text" id="Lastname"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Lastname" required />
                         </div>
@@ -83,14 +83,14 @@
                             <label for="Middlename"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Middlename
                             </label>
-                            <input type="text" name="Middleinitial" id="Contact"
+                            <input type="text" id="Contact"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Middlename" required />
                         </div>
                         <div>
                             <label for="Contact" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                                 Contact</label>
-                            <input type="text" name="Contact" id="Contact"
+                            <input type="text" id="Contact"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Contact" required />
                         </div>
@@ -98,14 +98,14 @@
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email
                             </label>
-                            <input type="text" name="Email" id="Email"
+                            <input type="text" id="Email"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Email" required />
                         </div>
                         <div>
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                            <input type="text" name="Gender" id="Gender"
+                            <input type="text" id="Gender"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Gender" required />
                         </div>
@@ -113,14 +113,14 @@
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth
                             </label>
-                            <input type="Date" name="Dateofbirth" id="Dateofbirth"
+                            <input type="Date" id="Dateofbirth"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Date of Birth" required />
                         </div>
                         <div>
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Citizenship</label>
-                            <input type="text" name="Citizenship" id="Citizenship"
+                            <input type="text" id="Citizenship"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Citizenship" required />
                         </div>
@@ -130,7 +130,7 @@
                         <div>
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Region</label>
-                            <input type="text" name="Region" id="Region"
+                            <input type="text" id="Region"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Region" required />
                         </div>
@@ -138,7 +138,7 @@
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province
                             </label>
-                            <input type="text" name="Province" id="Province"
+                            <input type="text" id="Province"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Province" required />
                         </div>
@@ -146,7 +146,7 @@
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City
                             </label>
-                            <input type="text" name="City" id="City"
+                            <input type="text" id="City"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="City" required />
                         </div>
@@ -155,30 +155,28 @@
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Barangy
                             </label>
-                            <input type="text" name="Brgy" id="Barangy"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Barangy" required />
-                        </div>
-
-                        <div>
-                            <label for="first_name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Zip Code
-                            </label>
-                            <input type="text" name="Zipcode" id="Barangy"
+                            <input type="text" id="Barangy"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Barangy" required />
                         </div>
 
 
-                        
-                        <hr>
                         <h2>Educational Attainment</h2>
-                        <h3>Elementary</h3>
+                        <hr>
+                        <div>
+
+                            <label for="first_name"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Educational
+                                Level</label>
+                            <input type="text" id="level"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="EducationalLevel" required />
+                        </div>
                         <div>
 
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Institution</label>
-                            <input type="text" name="InstitutionElem" id="Institution"
+                            <input type="text" id="Institution"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Institution" required />
                         </div>
@@ -187,81 +185,45 @@
 
                             <label for="first_name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Inclusivedate</label>
-                            <input type="text" name="InclusivedateElem" id="Inclusivedate"
+                            <input type="text" id="Inclusivedate"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 placeholder="Inclusivedate" required />
                         </div>
-                        <h3>High School</h3>
-                        <div>
-
-                            <label for="first_name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Institution</label>
-                            <input type="text" name="InstitutionHigh" id="Institution"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Institution" required />
-                        </div>
-
-                        <div>
-
-                            <label for="first_name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Inclusivedate</label>
-                            <input type="text" name="InclusivedateHigh" id="Inclusivedate"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Inclusivedate" required />
-                        </div>
-
-                        <h3>Higher</h3>
-                        <div>
-
-                            <label for="first_name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Institution</label>
-                            <input type="text" name="InstitutionColl" id="Institution"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Institution" required />
-                        </div>
-
-                        <div>
-
-                            <label for="first_name"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Inclusivedate</label>
-                            <input type="text" name="InclusivedateColl" id="Inclusivedate"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Inclusivedate" required />
-                        </div>
-                        
-                        
                      
                         <br>
 
                             <div>
                                 <h1>Work Experience</h1>
-                                <label for="first_name"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
-                                <input type="text" name="Company" id="Institution"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Institution" required />
-                            </div>
-                            <div>
-
+                                
                                 <label for="first_name"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Work</label>
-                                <input type="text" name="Work" id="Institution"
+                                <input type="text" id="Work"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Institution" required />
+                                    placeholder="Work" required />
                             </div>
-    
+
                             <div>
-    
+
                                 <label for="first_name"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Years</label>
-                                <input type="text" name="Years" id="Inclusivedate"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Company</label>
+                                <input type="text" id="Company"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="Inclusivedate" required />
+                                    placeholder="Company" required />
+                            </div>
+
+                            <div>
+
+                                <label for="first_name"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Years
+                                    Experience</label>
+                                <input type="text" id="Years"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Years Experience" required />
                             </div>
 
 
                             <div>
-                                <label for="Typeofapplication"
+                                <label for="first_name"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type of
                                     Application
                                 </label>
@@ -303,7 +265,7 @@
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date
                                     of application
                                 </label>
-                                <input type="Date" name="Dateofapplication" id="Dateofapplication"
+                                <input type="Date" id="Dateofapplication"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="Date of Application" required />
                             </div>

@@ -18,6 +18,7 @@ class ReportsController extends Controller
 
         return $pdf->stream('applicants_report.pdf');
     }
+    
     public function generateHiredApplicantsReport()
     {
 

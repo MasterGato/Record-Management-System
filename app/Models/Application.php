@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
+use LaravelArchivable\Archivable;
 
 class Application extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, Archivable,Notifiable;
 
     protected $fillable = [
         'Typeofapplication',

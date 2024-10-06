@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Applicant extends Model
+class ApplicantCreate extends Model
 {
     use HasFactory, SoftDeletes;
 
     // The table associated with the model (optional if naming convention is followed)
     protected $table = 'applicants';
     
+    protected $primaryKey = 'applicant_id';
 
     // Mass-assignable fields
     protected $fillable = [

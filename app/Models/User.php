@@ -11,7 +11,7 @@ use Filament\Panel;
 
 class User extends Authenticatable implements FilamentUser
 {
-
+    use Notifiable;
    const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive'; 
   

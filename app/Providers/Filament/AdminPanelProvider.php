@@ -23,15 +23,18 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+           
             ->brandName('MMML Recruitment Services')
             ->default()
             ->id('admin')
             ->path('admin')
+            ->passwordReset()
             ->login()
             ->colors([
                 'primary' => Color::Amber,
             ])
-            
+            ->databaseNotifications()
+            ->plugin(\Okeonline\FilamentArchivable\FilamentArchivablePlugin::make())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -58,5 +61,4 @@ class AdminPanelProvider extends PanelProvider
             ]);
             
     }
-    
 }

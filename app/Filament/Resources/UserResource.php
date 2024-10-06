@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\UserExporter;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use App\Models\Branch;
@@ -11,7 +12,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
-
+use App\Filament\Exports\UserExporterxporter;
+use Filament\Tables\Actions\ExportAction;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -99,9 +101,14 @@ class UserResource extends Resource
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
         ])
+        ->headerActions([
+            ExportAction::make()->exporter(UserExporter::class)
+        ])
+        
         ->filters([])
         ->actions([
             Tables\Actions\EditAction::make(),
+            
         ])
         ->bulkActions([
             Tables\Actions\BulkActionGroup::make([

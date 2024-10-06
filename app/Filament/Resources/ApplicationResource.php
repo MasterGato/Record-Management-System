@@ -19,6 +19,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Okeonline\FilamentArchivable\Tables\Actions\ArchiveAction;
+use Okeonline\FilamentArchivable\Tables\Actions\UnArchiveAction;
+use Okeonline\FilamentArchivable\Tables\Filters\ArchivedFilter;
+use LaravelArchivable\Scopes\ArchivableScope;
+use App\Filament\Exports\ApplicationExporter;
+use Illuminate\Support\Facades\Response; // Import Response facade
 
 class ApplicationResource extends Resource
 {
@@ -39,10 +45,9 @@ class ApplicationResource extends Resource
                     ])
                     ->required(),
 
-                // Use a custom query for the applicant select
                 Forms\Components\Select::make('applicant_id')
                     ->label('Applicant')
-                    ->options(fn() => Applicant::all()->pluck('full_name', 'id')) // Get all applicants and use their full name
+                    ->options(fn() => Applicant::all()->pluck('full_name', 'id'))
                     ->required()
                     ->searchable(),
 
@@ -64,18 +69,12 @@ class ApplicationResource extends Resource
                     ->visible(fn(?Application $record): bool => $record?->status === 'completed')
                     ->maxLength(7)
                     ->afterStateUpdated(function ($state, callable $set, callable $get) {
-                        // Check if control number is entered
                         if (!empty($state)) {
-                            // Update the status to 'hired'
-                            $applicationId = $get('id'); // Get the application ID
-
-                            // Update the application status in the database
+                            $applicationId = $get('id');
                             Application::where('id', $applicationId)->update(['status' => 'hired']);
 
-                            // Log the status change
                             Log::info("Application ID: {$applicationId} has changed status to 'hired'.");
 
-                            // Notify user about the status update
                             Notification::make()
                                 ->title('Status Updated')
                                 ->success()
@@ -83,11 +82,10 @@ class ApplicationResource extends Resource
                                 ->send();
                         }
 
-                        // Notify when the status is changed to 'completed'
                         if ($get('status') === 'completed') {
                             Notification::make()
                                 ->title('Control Number Open')
-                                ->info() // Change to info() for informational notification
+                                ->info()
                                 ->body('The control number is now open.')
                                 ->send();
                         }
@@ -135,7 +133,20 @@ class ApplicationResource extends Resource
 
                 Tables\Columns\TextColumn::make('Controlnumber'),
             ])
+            ->headerActions([
+                Action::make('export')
+                    ->label('Export Applications')
+                  
+            ])
             ->actions([
+                ArchiveAction::make()
+                    ->hiddenLabel()
+                    ->tooltip('Archive'),
+
+                UnArchiveAction::make()
+                    ->hiddenLabel()
+                    ->tooltip('Unarchive'),
+
                 Action::make('approve')
                     ->label('Approve')
                     ->icon('heroicon-o-check-circle')
@@ -151,32 +162,29 @@ class ApplicationResource extends Resource
                     ->icon('heroicon-o-x-circle')
                     ->color('danger')
                     ->action(function (Application $record) {
-                        $record->delete(); // Soft delete the application
+                        $record->update(['status' => 'rejected']);
+                        $record->archive(); // Archive instead of delete
                     })
                     ->requiresConfirmation()
                     ->visible(fn(Application $record) => Auth::user()->role === 'MANAGER' && $record->status === 'pending'),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
+                ArchivedFilter::make(), // Add archived filter to show archived records
             ])
-            ->bulkActions([])
-            ->searchable() // Enable global search
+            ->bulkActions([]) // Remove delete bulk action if exists
+            ->searchable()
             ->defaultSort('id', 'desc'); // Optional: Set a default sorting
     }
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+            ->withoutGlobalScopes([SoftDeletingScope::class, ArchivableScope::class]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            // Define any relations if needed
-        ];
+        return [];
     }
 
     public static function getPages(): array

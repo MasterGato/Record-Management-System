@@ -169,7 +169,6 @@ class ApplicantResource extends Resource
                 // Add filters if needed
             ])
             ->actions([
-                ViewAction::make(),
                 EditAction::make(),
             ])
             ->bulkActions([

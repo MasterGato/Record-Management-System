@@ -126,9 +126,9 @@
                 <tr>
                     <td>{{ $application->id }}</td> <!-- Assuming 'id' is the primary key in Application -->
                     <td>{{ $application->firstname . $application->middlename . $application->lastname ?? 'N/A' }}</td> <!-- Using the accessor method to get full name -->
-                    <td>{{ $application->Dateofapplication }}</td>
-                    <td>{{ $application->Typeofapplication }}</td>
-                    <td>{{ $application->Controlnumber }}</td>
+                    <td>{{ $application->contact }}</td>
+                    <td>{{ $application->role }}</td>
+                    <td>{{ $application->branch->branchname }}</td>
                     <td>{{ $application->status }}</td>
                 </tr>
             @endforeach

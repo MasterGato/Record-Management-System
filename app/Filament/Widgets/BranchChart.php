@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class BranchChart extends ChartWidget
 {
-    protected static ?string $heading = 'Branch Applicants and Applications';
+    protected static ?string $heading = 'Branch Applicants, Applications, and Hired Applicants';
     protected int | string | array $columnSpan = 'full';
     protected static ?int $sort = 2;
 
@@ -17,12 +17,13 @@ class BranchChart extends ChartWidget
 
     protected function getData(): array
     {
-        // Query to get branches with the number of applicants and applications, filtered by the selected year
+        // Query to get branches with the number of applicants, applications, and hired applicants, filtered by the selected year
         $query = Branch::select('branches.branchname')
             ->leftJoin('applicants', 'branches.id', '=', 'applicants.branch_id')
             ->leftJoin('applications', 'branches.id', '=', 'applications.branch_id')
             ->selectRaw('count(DISTINCT applicants.id) as total_applicants')
             ->selectRaw('count(DISTINCT applications.id) as total_applications')
+            ->selectRaw("count(DISTINCT CASE WHEN applications.status = 'hired' THEN applications.id END) as total_hired_applicants")
             ->groupBy('branches.branchname');
 
         // Apply year filtering if a year is selected
@@ -36,6 +37,7 @@ class BranchChart extends ChartWidget
         $branchNames = $branchesData->pluck('branchname')->toArray();
         $applicantCounts = $branchesData->pluck('total_applicants')->toArray();
         $applicationCounts = $branchesData->pluck('total_applications')->toArray();
+        $hiredApplicantCounts = $branchesData->pluck('total_hired_applicants')->toArray();
 
         return [
             'labels' => $branchNames,
@@ -49,6 +51,11 @@ class BranchChart extends ChartWidget
                     'label' => 'Applications',
                     'backgroundColor' => 'rgba(255, 99, 132, 0.7)',
                     'data' => $applicationCounts,
+                ],
+                [
+                    'label' => 'Hired Applicants',
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.7)',
+                    'data' => $hiredApplicantCounts,
                 ],
             ],
             'options' => [

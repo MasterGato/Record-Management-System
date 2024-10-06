@@ -23,18 +23,20 @@ class StatsOverview extends BaseWidget
                 ->description('Number of Applicants')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart($this->generateChartData(Applicant::count())),
+                ->chart($this->generateChartData(Applicant::count()))
+                ->extraAttributes(['onclick' => "window.open('http://127.0.0.1:8000/applicants-report', '_blank');", 'style' => 'cursor: pointer;']),
 
             Stat::make('Applications', Application::count())
                 ->description('Number of Applications')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->generateChartData(Application::count())),
-            Stat::make('Hired Applicants', Application::where('status', 'hired')->count())
+                Stat::make('Hired Applicants', Application::where('status', 'hired')->count())
                 ->description('Number of Hired Applicants')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart($this->generateChartData(Application::where('status', 'hired')->count())),
+                ->chart($this->generateChartData(Application::where('status', 'hired')->count()))
+                ->extraAttributes(['onclick' => "window.open('http://127.0.0.1:8000/hired-applicants-report', '_blank');", 'style' => 'cursor: pointer;']),
         ];
     }
 
