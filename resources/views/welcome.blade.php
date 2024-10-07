@@ -1,6 +1,6 @@
 @extends('layouts.app')
-
 @section('content')
+<script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media(prefers-color-scheme: dark) {
             .bg-dots {
@@ -17,7 +17,7 @@
 
     <nav class="flex justify-between px-5 py-2 bg-slate-900 items-center shadow-xl">
         <div>
-            <h1 class="text-xs font-bold text-white">MMML</h1>
+            <h1 class="text-xs font-bold text-white">MMML Recruitment Service Inc.</h1>
         </div>
 
 
@@ -169,8 +169,6 @@
                                 placeholder="Barangy" required />
                         </div>
 
-
-                        
                         <hr>
                         <h2>Educational Attainment</h2>
                         <h3>Elementary</h3>

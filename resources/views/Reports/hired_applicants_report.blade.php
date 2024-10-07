@@ -110,10 +110,10 @@
                     <tr>
                         <td>{{ $application->id }}</td> <!-- Assuming 'id' is the primary key in Application -->
                         <td>{{ $application->applicant->full_name ?? 'N/A' }}</td> <!-- Using the accessor method to get full name -->
-                        <td>{{ $application->date_of_application }}</td>
-                        <td>{{ $application->date_of_hire }}</td> <!-- New field for date of hire -->
-                        <td>{{ $application->type_of_application }}</td>
-                        <td>{{ $application->control_number }}</td>
+                        <td>{{ $application->Dateofapplication }}</td>
+                        <td>{{ $application->Date_of_hire }}</td> <!-- New field for date of hire -->
+                        <td>{{ $application->Typeofapplication }}</td>
+                        <td>{{ $application->Controlnumber }}</td>
                         <td>{{ $application->status }}</td>
                     </tr>
                 @endforeach

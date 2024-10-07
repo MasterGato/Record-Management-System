@@ -30,10 +30,12 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->passwordReset()
             ->login()
+            ->emailVerification()
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->databaseNotifications()
+            ->databaseNotificationsPolling('20s')
             ->plugin(\Okeonline\FilamentArchivable\FilamentArchivablePlugin::make())
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

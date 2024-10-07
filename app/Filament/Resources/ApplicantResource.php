@@ -4,7 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ApplicantResource\Pages;
 use App\Models\Applicant;
+use App\Models\Barangay;
 use App\Models\Branch; // Import the Branch model for the relationship
+use App\Models\Region; // Import the Region model
+use App\Models\Province; // Import the Province model
+use App\Models\Municipality; // Import the Municipality model
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Repeater;
@@ -22,6 +26,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\Section as InfolistSection; // Correct Infolist Section import
 use Filament\Forms\Components\Section;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Storage;
 
 class ApplicantResource extends Resource
 {
@@ -76,18 +81,54 @@ class ApplicantResource extends Resource
                         TextInput::make('Citizenship')
                             ->label('Citizenship')
                             ->required(),
-                        TextInput::make('Region')
+                        
+                        // Implementing dynamic location fields
+                        Select::make('region_id')
                             ->label('Region')
+                            ->options(function () {
+                                return Region::all()->pluck('region_name', 'id');
+                            })
+                            ->reactive() // Make it reactive
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('province_id', null); // Reset province when region changes
+                                $set('municipality_id', null); // Reset city when region changes
+                                $set('barangay_id', null); // Reset barangay when region changes
+                            })
                             ->required(),
-                        TextInput::make('Province')
+
+                        Select::make('province_id')
                             ->label('Province')
+                            ->options(function (callable $get) {
+                                $regionId = $get('region_id');
+                                return Province::where('region_id', $regionId)->pluck('province_name', 'id');
+                            })
+                            ->reactive() // Make it reactive
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('municipality_id', null); // Reset city when province changes
+                                $set('barangay_id', null); // Reset barangay when province changes
+                            })
                             ->required(),
-                        TextInput::make('City')
-                            ->label('City')
+
+                        Select::make('municipality_id')
+                            ->label('Municipality')
+                            ->options(function (callable $get) {
+                                $provinceId = $get('province_id');
+                                return Municipality::where('province_id', $provinceId)->pluck('municipality_name', 'id');
+                            })
+                            ->reactive() // Make it reactive
+                            ->afterStateUpdated(function (callable $set) {
+                                $set('barangay_id', null); // Reset barangay when municipality changes
+                            })
                             ->required(),
-                        TextInput::make('Brgy')
+
+                        Select::make('barangay_id')
                             ->label('Barangay')
+                            ->options(function (callable $get) {
+                                $municipalityId = $get('municipality_id');
+                                return Barangay::where('municipality_id', $municipalityId)->pluck('barangay_name', 'id');
+                            })
                             ->required(),
+
                         TextInput::make('Zipcode')
                             ->label('Zipcode')
                             ->required(),
@@ -139,15 +180,20 @@ class ApplicantResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                // Combine Firstname and Lastname into one column for Full Name
-                TextColumn::make('fullname')
-                    ->label('Full Name')
-                    ->formatStateUsing(function ($state, Applicant $record) {
-                        return $record->Firstname . ' ' . $record->Lastname;
-                    })
-                    ->sortable()
-                    ->searchable(),
+        ->columns([
+            TextColumn::make('Firstname')
+                ->label('First Name')
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('Middleinitial')
+                ->label('Middle Initial')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('Lastname')
+                ->label('Last Name')
+                ->sortable()
+                ->searchable(),
 
                 TextColumn::make('Email')
                     ->label('Email')
@@ -159,12 +205,8 @@ class ApplicantResource extends Resource
                     ->searchable()
                     ->sortable(),
                     
-                TextColumn::make('branch.branchname')
-                    ->label('Branch')
-                    ->searchable()
-                    ->sortable(),
             ])
-
+            
             ->filters([
                 // Add filters if needed
             ])
@@ -177,10 +219,10 @@ class ApplicantResource extends Resource
                 ]),
             ]);
     }
+
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-
             ->schema([
                 InfolistSection::make('Applicant Information')
                     ->schema([
@@ -196,6 +238,7 @@ class ApplicantResource extends Resource
                     ->columns(2), // Ensure 'columns' is lowercase
             ]);
     }
+
     public static function getRelations(): array
     {
         return [

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Hired Applicants Report</title>
+    <title>Active Users Report</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -41,7 +41,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            font-size: 11px; /* Decrease table font size to 11 */
+            font-size: 11px;
         }
         .table-applicants th, .table-applicants td {
             text-align: left;
@@ -57,10 +57,10 @@
         }
         .prepared-by {
             margin: 0;
-            font-size: 12px; /* Adjust the font size */
-            font-weight: bold; /* Make it bold */
-            color: black; /* Optional: you can adjust the color */
-            margin-bottom: 10px; /* Space below this text */
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 10px;
         }
         .report-info h5 {
             margin: 0;
@@ -71,17 +71,11 @@
         .report-info p {
             margin: 5px 0 0 0;
             font-size: 12px;
-            font-weight: normal;
-            color: gray;
-        }
-        .printed-info {
-            font-size: 12px;
             color: gray;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="header">
             <div>
@@ -89,46 +83,41 @@
             </div>
         </div>
         <div class="title-container">
-            <div class="report-title">HIRED APPLICANTS REPORT</div>
+            <div class="report-title">Active Users Report</div>
         </div>
-
-        <!-- Table with hired applicants data -->
         <table class="table-applicants">
             <thead>
                 <tr>
-                    <th>Applicant ID</th>
-                    <th>Applicant Name</th>
-                    <th>Date of Application</th>
-                    <th>Date of Hire</th>
-                    <th>Type of Application</th>
-                    <th>Control Number</th>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Contact Number</th>
+                    <th>Role</th>
+                    <th>Branch</th>
                     <th>Status</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach($hiredApplications as $application)
+                @foreach($employees as $user)
                     <tr>
-                        <td>{{ $application->id }}</td> <!-- Assuming 'id' is the primary key in Application -->
-                        <td>{{ $application->applicant->full_name ?? 'N/A' }}</td> <!-- Using the accessor method to get full name -->
-                        <td>{{ $application->date_of_application }}</td>
-                        <td>{{ $application->date_of_hire }}</td> <!-- New field for date of hire -->
-                        <td>{{ $application->type_of_application }}</td>
-                        <td>{{ $application->control_number }}</td>
-                        <td>{{ $application->status }}</td>
+                        <td>{{ $user->id }}</td>
+                        <td>{{ $user->firstname }} {{ $user->middlename }} {{ $user->lastname }}</td>
+                        <td>{{ $user->contact }}</td>
+                        <td>{{ $user->role }}</td>
+                        <td>{{ $user->branch->branchname }}</td>
+                        <td>{{ $user->status }}</td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
         <div class="report-info">
             <p class="prepared-by">Prepared By:</p>
-            <h5>{{ Auth::user()->firstname. " " . Auth::user()->middlename. " " . Auth::user()->lastname }}</h5>
+            <h5>{{ Auth::user()->firstname }} {{ Auth::user()->middlename }} {{ Auth::user()->lastname }}</h5>
             <p>{{ Auth::user()->role }}</p>
         </div>
         <div class="printed-info">
-            <p>Printed Date: {{ date('F j, Y') }}</p>
-            <p>Printed Time: {{ \Carbon\Carbon::now('Asia/Manila')->format('h:i A') }}</p>
+            <p style="font-size: 12px; color: gray;">Printed Date: {{ date('F j, Y') }}</p>
+            <p style="font-size: 12px; color: gray;">Printed Time: {{ \Carbon\Carbon::now('Asia/Manila')->format('h:i A') }}</p>
         </div>
     </div>
-
 </body>
 </html>

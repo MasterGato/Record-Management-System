@@ -205,7 +205,11 @@ class CountriesSeeder extends Seeder
             ['name' => 'Yemen'],
             ['name' => 'Zambia'],
             ['name' => 'Zimbabwe'],
+
+        
         ];
         DB::table('countries')->insert($countries);
+        
     }
+    
 }

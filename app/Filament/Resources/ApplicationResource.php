@@ -24,7 +24,10 @@ use Okeonline\FilamentArchivable\Tables\Actions\UnArchiveAction;
 use Okeonline\FilamentArchivable\Tables\Filters\ArchivedFilter;
 use LaravelArchivable\Scopes\ArchivableScope;
 use App\Filament\Exports\ApplicationExporter;
+use Filament\Tables\Actions\ExportAction;
 use Illuminate\Support\Facades\Response; // Import Response facade
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Branch;
 
 class ApplicationResource extends Resource
 {
@@ -57,6 +60,7 @@ class ApplicationResource extends Resource
 
                 Forms\Components\Select::make('branch_id')
                     ->relationship('branch', 'branchname')
+                    ->options(fn() => Branch::where('id', Auth::user()->branch_id)->pluck('branchname', 'id'))
                     ->required(),
 
                 Forms\Components\DatePicker::make('Dateofapplication')
@@ -104,13 +108,20 @@ class ApplicationResource extends Resource
 
                 Tables\Columns\TextColumn::make('Typeofapplication'),
 
-                Tables\Columns\TextColumn::make('applicant.fullname')
-                    ->label('Full Name')
-                    ->formatStateUsing(function ($state, Application $record) {
-                        return $record->applicant->Firstname . ' ' . $record->applicant->Lastname;
-                    })
+                // Adding a computed column for Full Name
+                Tables\Columns\TextColumn::make('applicant.Firstname')
+                    ->label('First Name')
                     ->sortable()
                     ->searchable(),
+                Tables\Columns\TextColumn::make('applicant.Middleinitial')
+                    ->label('Middle Initial')
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('applicant.Lastname')
+                    ->label('Last Name')
+                    ->sortable()
+                    ->searchable(),
+
 
                 Tables\Columns\TextColumn::make('jobOffer.Job'),
 
@@ -134,9 +145,21 @@ class ApplicationResource extends Resource
                 Tables\Columns\TextColumn::make('Controlnumber'),
             ])
             ->headerActions([
-                Action::make('export')
-                    ->label('Export Applications')
-                  
+                Action::make('show_hired_report') // New header action for report
+                    ->label('Show Hired Applicants Report') // Button label
+                    ->action(function () {
+                        $hiredApplications = Application::where('status', 'hired')->with('applicant')->get();
+
+                        // Create the PDF view with the hired applications data
+                        $pdf = Pdf::loadView('reports.hired_applicants_report', compact('hiredApplications'))
+                            ->setPaper('a4', 'portrait'); // Set paper size and orientation
+
+                        // Stream the PDF download
+                        return response()->streamDownload(
+                            fn() => print($pdf->output()),
+                            'hired_applicants_report.pdf'
+                        );
+                    })
             ])
             ->actions([
                 ArchiveAction::make()
@@ -171,14 +194,18 @@ class ApplicationResource extends Resource
             ->filters([
                 ArchivedFilter::make(), // Add archived filter to show archived records
             ])
-            ->bulkActions([]) // Remove delete bulk action if exists
-            ->searchable()
-            ->defaultSort('id', 'desc'); // Optional: Set a default sorting
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])
+            ->searchable(); // Search the full name column
     }
 
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->where('branch_id', Auth::user()->branch_id) // Filter by user's branch ID
             ->withoutGlobalScopes([SoftDeletingScope::class, ArchivableScope::class]);
     }
 

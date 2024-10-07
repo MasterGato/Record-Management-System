@@ -10,7 +10,8 @@ use LaravelArchivable\Archivable;
 
 class Application extends Model
 {
-    use HasFactory, Archivable,Notifiable;
+    use Notifiable;
+    use HasFactory, Archivable;
 
     protected $fillable = [
         'Typeofapplication',

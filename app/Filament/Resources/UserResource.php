@@ -14,6 +14,12 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
 use App\Filament\Exports\UserExporterxporter;
 use Filament\Tables\Actions\ExportAction;
+use App\Exports\UsersExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Filament\Tables\Actions\Action;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
@@ -102,13 +108,43 @@ class UserResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true),
         ])
         ->headerActions([
-            ExportAction::make()->exporter(UserExporter::class)
+            // Export as PDF action
+            Action::make('export_pdf')
+                ->label('Download PDF Report')
+                ->action(function () {
+                    // Get all active users
+                    $employees = User::with('branch')
+                                    ->where('status', 'active') // Filter active users
+                                    ->get();
+
+                    // Create PDF from the Blade view
+                    $pdf = Pdf::loadView('reports.users', compact('employees'));
+
+                    // Return PDF download response
+                    return response()->streamDownload(
+                        fn () => print($pdf->output()),
+                        'active_users_report.pdf'
+                    );
+                })
+                // Optional: Add an icon
+                ->color('success'), // Optional: Add button color
         ])
-        
-        ->filters([])
+        ->filters([
+          
+        ])
         ->actions([
-            Tables\Actions\EditAction::make(),
-            
+            Tables\Actions\Action::make('changeStatus')
+                ->label('Change Status')
+                ->action(function (User $record) {
+                    $record->status = $record->status === 'active' ? 'inactive' : 'active'; // Toggle status
+                    $record->save();
+                })
+                ->requiresConfirmation() // Add confirmation
+                ->modalHeading('Confirm Status Change')
+                ->modalSubheading('Are you sure you want to change the user status?')
+                ->modalButton('Yes, change status')
+                ->color('warning'), // Optional: Change color for visibility
+                Tables\Actions\EditAction::make(),
         ])
         ->bulkActions([
             Tables\Actions\BulkActionGroup::make([
@@ -116,7 +152,6 @@ class UserResource extends Resource
             ]),
         ]);
     }
-
     public static function getRelations(): array
     {
         return [];

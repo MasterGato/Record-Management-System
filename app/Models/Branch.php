@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Branch extends Model
 {
+    protected $primarykey ='branch_id';
     use HasFactory;
     protected $fillable = [
         'branchname',
         'region',
         'province',
-        'city'
+        'city',
+        'status'
     ];
     public function applications()
     {

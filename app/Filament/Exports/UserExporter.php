@@ -6,6 +6,8 @@ use App\Models\User;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
+use Maatwebsite\Excel\Concerns\FromCollection;
+
 
 class UserExporter extends Exporter
 {
@@ -14,8 +16,21 @@ class UserExporter extends Exporter
     public static function getColumns(): array
     {
         return [
-            ExportColumn::make('id'),
-            ExportColumn::make('firstname')
+            ExportColumn::make('id')
+                ->label('ID'),
+            ExportColumn::make('name'),
+            ExportColumn::make('firstname'),
+            ExportColumn::make('lastname'),
+            ExportColumn::make('middlename'),
+            ExportColumn::make('gender'),
+            ExportColumn::make('contact'),
+            ExportColumn::make('email'),
+            ExportColumn::make('email_verified_at'),
+            ExportColumn::make('role'),
+            ExportColumn::make('status'),
+            ExportColumn::make('branch_id'),
+            ExportColumn::make('created_at'),
+            ExportColumn::make('updated_at'),
         ];
     }
 

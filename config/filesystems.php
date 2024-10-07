@@ -40,7 +40,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('http://127.0.0.1:8000').'/storage',
+            'url' => env('https://wbrms-mmml.online').'/storage',
             'visibility' => 'public',
             'throw' => false,
         ],
