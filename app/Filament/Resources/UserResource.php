@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Exports\UserExporter;
+use App\Exports\UserExporter;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use App\Models\Branch;
@@ -12,13 +12,10 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
-use App\Filament\Exports\UserExporterxporter;
 use Filament\Tables\Actions\ExportAction;
-use App\Exports\UsersExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Filament\Tables\Actions\Action;
-use Barryvdh\DomPDF\Facade\Pdf;
-
+use Filament\Tables\Filters\SelectFilter;
 
 class UserResource extends Resource
 {
@@ -44,9 +41,12 @@ class UserResource extends Resource
             Forms\Components\TextInput::make('middlename')
                 ->maxLength(255)
                 ->default(null),
-            Forms\Components\TextInput::make('gender')
-                ->required()
-                ->maxLength(255),
+            Select::make('gender')
+                ->label('Gender')
+                ->options([
+                    'Male' => 'Male',
+                    'Female' => 'Female',
+                ]),
             Forms\Components\TextInput::make('contact')
                 ->required()
                 ->maxLength(255),
@@ -54,22 +54,26 @@ class UserResource extends Resource
                 ->email()
                 ->required()
                 ->maxLength(255),
-            Forms\Components\DateTimePicker::make('email_verified_at'),
+            // Conditional rendering for password input
             Forms\Components\TextInput::make('password')
                 ->password()
-                ->required()
-                ->maxLength(255),
-            Select::make('role') 
-                ->options(User::ROLES) // Ensure User::ROLES is defined properly
+                ->required(fn($record) => is_null($record)) // Only required when creating a new user
+                ->maxLength(255)
+                ->visible(fn($record) => is_null($record)), // Only visible when creating a new user
+            Select::make('role')
+                ->options(self::getFilteredRoles()) // Fetch filtered roles
                 ->required(),
             Select::make('branch_id')
                 ->label('Branch')
                 ->options(Branch::pluck('branchname', 'id')->toArray()) // Use 'id' for branch ID
                 ->native(false)
                 ->required(),
-            Forms\Components\TextInput::make('status')
-                ->required()
-                ->maxLength(255),
+            Forms\Components\Select::make('status')
+                ->label('Status')
+                ->options([
+                    'active' => 'Active',
+                    'inactive' => 'Inactive',
+                ]),
         ]);
     }
 
@@ -98,60 +102,48 @@ class UserResource extends Resource
                 ->searchable(),
             Tables\Columns\TextColumn::make('status')
                 ->searchable(),
-            Tables\Columns\TextColumn::make('created_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
-            Tables\Columns\TextColumn::make('updated_at')
-                ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
         ])
-        ->headerActions([
-            // Export as PDF action
-            Action::make('export_pdf')
-                ->label('Download PDF Report')
-                ->action(function () {
-                    // Get all active users
-                    $employees = User::with('branch')
-                                    ->where('status', 'active') // Filter active users
-                                    ->get();
-
-                    // Create PDF from the Blade view
-                    $pdf = Pdf::loadView('reports.users', compact('employees'));
-
-                    // Return PDF download response
-                    return response()->streamDownload(
-                        fn () => print($pdf->output()),
-                        'active_users_report.pdf'
-                    );
-                })
-                // Optional: Add an icon
-                ->color('success'), // Optional: Add button color
-        ])
-        ->filters([
-          
-        ])
-        ->actions([
-            Tables\Actions\Action::make('changeStatus')
-                ->label('Change Status')
-                ->action(function (User $record) {
-                    $record->status = $record->status === 'active' ? 'inactive' : 'active'; // Toggle status
-                    $record->save();
-                })
-                ->requiresConfirmation() // Add confirmation
-                ->modalHeading('Confirm Status Change')
-                ->modalSubheading('Are you sure you want to change the user status?')
-                ->modalButton('Yes, change status')
-                ->color('warning'), // Optional: Change color for visibility
+            ->headerActions([
+                // Export as Excel action
+                Action::make('export')
+                    ->label('Export Users')
+                    ->action(function () {
+                        return Excel::download(new UserExporter, 'users_report.xlsx');
+                    })
+            ])
+            ->filters([
+                SelectFilter::make('branch_id') // Add the branch filter
+                    ->label('Branch')
+                    ->options(Branch::pluck('branchname', 'id')) // List of branches
+                    ->searchable(),
+            ])
+            ->actions([
+                Tables\Actions\Action::make('changeStatus')
+                    ->label('Change Status')
+                    ->action(function (User $record) {
+                        $record->status = $record->status === 'active' ? 'inactive' : 'active'; // Toggle status
+                        $record->save();
+                    })
+                    ->requiresConfirmation() // Add confirmation
+                    ->modalHeading('Confirm Status Change')
+                    ->modalSubheading('Are you sure you want to change the user status?')
+                    ->modalButton('Yes, change status')
+                    ->color('warning'), // Optional: Change color for visibility
                 Tables\Actions\EditAction::make(),
-        ])
-        ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
-                Tables\Actions\DeleteBulkAction::make(),
-            ]),
-        ]);
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ]);
     }
+
+    public static function getFilteredRoles(): array
+    {
+        // Exclude 'admin' from the roles list
+        return collect(User::ROLES)->except('admin')->toArray();
+    }
+
     public static function getRelations(): array
     {
         return [];

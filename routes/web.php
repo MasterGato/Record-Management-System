@@ -6,6 +6,9 @@ use App\Http\Controllers\ApplicationController;
 use App\Filament\Exports\ApplicationExporter;
 use Filament\Actions\Exports\Models\Export;
 use App\Http\Controllers\HiredApplicantsReportController;
+use App\Http\Controllers\Auth\LoginController;
+
+Route::post('/login', [LoginController::class, 'login'])->name('login');
 
 Route::get('', [ApplicationController::class, 'showForm']);
 Route::post('submitForm', [ApplicationController::class, 'submitForm'])->name('submitForm');

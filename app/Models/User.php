@@ -18,18 +18,15 @@ class User extends Authenticatable implements FilamentUser
     const ROLE_ADMIN = 'ADMIN';
     const ROLE_MANAGER = 'MANAGER';
     const ROLE_CLERK = 'CLERK';
-    const ROLE_APPLICANT = 'APPLICANT';
-    const ROLE_USER = 'USER';
+   
 
 
-    const ROLE_DEFAULT =self::ROLE_USER;
+    const ROLE_DEFAULT =self::ROLE_ADMIN;
 
     const ROLES = [
         self::ROLE_ADMIN => 'Admin',
         self::ROLE_MANAGER => 'Manager',
         self::ROLE_CLERK => 'Clerk',
-        self::ROLE_APPLICANT => 'Applicant',
-        self::ROLE_USER => 'User'
     ];
     public function isActive(): bool // Method to check if user is active
     {
@@ -52,15 +49,6 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->role === self::ROLE_CLERK;
     }
-    public function isApplicant()
-    {
-        return $this->role === self::ROLE_APPLICANT;
-    }
-    public function isUser()
-    {
-        return $this->role === self::ROLE_USER;
-    }
-
 
     use HasFactory, Notifiable;
 

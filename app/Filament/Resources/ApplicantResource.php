@@ -65,7 +65,6 @@ class ApplicantResource extends Resource
                             ->options([
                                 'Male' => 'Male',
                                 'Female' => 'Female',
-                                'Other' => 'Other',
                             ])
                             ->required(),
                         TextInput::make('Contact')
@@ -206,9 +205,11 @@ class ApplicantResource extends Resource
                     ->sortable(),
                     
             ])
-            
             ->filters([
-                // Add filters if needed
+                SelectFilter::make('branch_id') // Add the branch filter
+                    ->label('Branch')
+                    ->options(Branch::pluck('branchname', 'id')) // List of branches
+                    ->searchable(),
             ])
             ->actions([
                 EditAction::make(),

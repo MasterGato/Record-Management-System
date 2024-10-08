@@ -1,47 +1,26 @@
 <?php
 
-namespace App\Filament\Exports;
+namespace App\Exports;
 
 use App\Models\User;
-use Filament\Actions\Exports\ExportColumn;
-use Filament\Actions\Exports\Exporter;
-use Filament\Actions\Exports\Models\Export;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-
-class UserExporter extends Exporter
+class UserExporter implements FromQuery, WithHeadings
 {
-    protected static ?string $model = User::class;
-
-    public static function getColumns(): array
+    public function query()
     {
-        return [
-            ExportColumn::make('id')
-                ->label('ID'),
-            ExportColumn::make('name'),
-            ExportColumn::make('firstname'),
-            ExportColumn::make('lastname'),
-            ExportColumn::make('middlename'),
-            ExportColumn::make('gender'),
-            ExportColumn::make('contact'),
-            ExportColumn::make('email'),
-            ExportColumn::make('email_verified_at'),
-            ExportColumn::make('role'),
-            ExportColumn::make('status'),
-            ExportColumn::make('branch_id'),
-            ExportColumn::make('created_at'),
-            ExportColumn::make('updated_at'),
-        ];
+        // Return the query that you want to export
+        return User::query();
     }
 
-    public static function getCompletedNotificationBody(Export $export): string
+    public function headings(): array
     {
-        $body = 'Your user export has completed and ' . number_format($export->successful_rows) . ' ' . str('row')->plural($export->successful_rows) . ' exported.';
-
-        if ($failedRowsCount = $export->getFailedRowsCount()) {
-            $body .= ' ' . number_format($failedRowsCount) . ' ' . str('row')->plural($failedRowsCount) . ' failed to export.';
-        }
-
-        return $body;
+        return [
+            'ID',
+            'Name',
+            'Email',
+            'Created At',
+        ];
     }
 }

@@ -7,36 +7,53 @@ use App\Models\Application;
 use App\Models\Branch;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
+        $user = Auth::user();
+        $isAdmin = $user->role === 'admin'; // Assuming you have a role attribute on the User model
+        $branchId = $user->branch_id;
+
+        // Overall data if admin, or filtered data for branch if not admin
+        $applicantsCount = $isAdmin ? Applicant::count() : Applicant::where('branch_id', $branchId)->count();
+        $applicationsCount = $isAdmin ? Application::count() : Application::where('branch_id', $branchId)->count();
+        $hiredApplicantsCount = $isAdmin ? Application::where('status', 'hired')->count() : Application::where('branch_id', $branchId)->where('status', 'hired')->count();
+
         return [
+            // Adding branch display
+            Stat::make('Current Branch', $user->branch->branchname ?? 'N/A') // Assuming User model has a relationship with Branch
+                ->description('Branch of the logged-in user')
+                ->descriptionIcon('heroicon-m-flag')
+                ->color('info'),
             Stat::make('Branches', Branch::count())
                 ->description('Number of Branches')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->generateChartData(Branch::count())),
 
-            Stat::make('Applicants', Applicant::count())
+            Stat::make('Applicants', $applicantsCount)
                 ->description('Number of Applicants')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart($this->generateChartData(Applicant::count()))
-                ->extraAttributes(['onclick' => "window.open('http://127.0.0.1:8000/applicants-report', '_blank');", 'style' => 'cursor: pointer;']),
+                ->chart($this->generateChartData($applicantsCount)),
 
-            Stat::make('Applications', Application::count())
+            Stat::make('Applications', $applicationsCount)
                 ->description('Number of Applications')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart($this->generateChartData(Application::count())),
-                Stat::make('Hired Applicants', Application::where('status', 'hired')->count())
+                ->chart($this->generateChartData($applicationsCount)),
+
+            Stat::make('Hired Applicants', $hiredApplicantsCount)
                 ->description('Number of Hired Applicants')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
-                ->chart($this->generateChartData(Application::where('status', 'hired')->count()))
-                ->extraAttributes(['onclick' => "window.open('http://127.0.0.1:8000/hired-applicants-report', '_blank');", 'style' => 'cursor: pointer;']),
+                ->chart($this->generateChartData($hiredApplicantsCount)),
+
+
         ];
     }
 

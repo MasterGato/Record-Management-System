@@ -10,7 +10,11 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\ForceDeleteAction;
+use Filament\Tables\Actions\RestoreAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Facades\Filament;
+use Illuminate\Validation\Rule;
 
 class BranchResource extends Resource
 {
@@ -26,32 +30,38 @@ class BranchResource extends Resource
                 Forms\Components\TextInput::make('branchname')
                     ->label('Branch Name')
                     ->default('MMML-')
-                    ->required(),
-
+                    ->required()
+                    // Ensure the branch name is unique in the 'branches' table
+                    ->rules([
+                        'required',
+                        Rule::unique('branches', 'branchname')->ignore(request()->route('record')), 
+                    ])
+                    ->validationAttribute('branch name'), // Optional: customize attribute name in validation error message
+                
                 Forms\Components\Select::make('region')
                     ->label('Region')
                     ->options(self::getRegions())
-                    ->reactive() // Make the field reactive to changes
-                    ->afterStateUpdated(fn(callable $set) => $set('province', null)) // Reset province when region changes
-                    ->afterStateUpdated(fn(callable $set) => $set('city', null)), // Reset city when region changes
-
+                    ->reactive()
+                    ->afterStateUpdated(fn(callable $set) => $set('province', null))
+                    ->afterStateUpdated(fn(callable $set) => $set('city', null)),
+    
                 Forms\Components\Select::make('province')
                     ->label('Province')
                     ->options(function (callable $get) {
                         return self::getProvinces($get('region'));
                     })
-                    ->reactive() // Make the field reactive to changes
-                    ->afterStateUpdated(fn(callable $set) => $set('city', null)) // Reset city when province changes
+                    ->reactive()
+                    ->afterStateUpdated(fn(callable $set) => $set('city', null))
                     ->required(),
-
+    
                 Forms\Components\Select::make('city')
                     ->label('City')
                     ->options(function (callable $get) {
                         return self::getCities($get('province'));
                     })
-                    ->reactive() // Make the field reactive to changes
+                    ->reactive()
                     ->required(),
-
+    
                 Forms\Components\Select::make('status')
                     ->label('Status')
                     ->options([
@@ -59,9 +69,10 @@ class BranchResource extends Resource
                         'inactive' => 'Inactive',
                     ])
                     ->required()
-                    ->default('active'), // Default status should match option keys
+                    ->default('active'),
             ]);
     }
+    
 
     public static function table(Table $table): Table
     {
@@ -83,16 +94,11 @@ class BranchResource extends Resource
                     ->label('Status')
                     ->sortable()
                     ->searchable(),
-                    
-            ])
-            ->filter([
-                //SelectFilter::make('branch')
-                  //->option(Branch::pluck('branch','branchname'))
             ])
             ->actions([
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
-                Tables\Actions\EditAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
+                EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -103,11 +109,9 @@ class BranchResource extends Resource
 
     public static function getRegions(): array
     {
-        // Load the JSON data
         $json = Storage::get('locations.json');
         $locations = json_decode($json, true);
 
-        // Extract regions
         return collect($locations)->mapWithKeys(function ($regionData, $regionName) {
             return [$regionName => $regionData['region_name']];
         })->toArray();
@@ -115,9 +119,8 @@ class BranchResource extends Resource
 
     public static function getProvinces(?string $region): array
     {
-        // Check if region is null
         if (is_null($region)) {
-            return []; // Return empty array if no region is selected
+            return [];
         }
 
         $json = Storage::get('locations.json');
@@ -130,9 +133,8 @@ class BranchResource extends Resource
 
     public static function getCities(?string $province): array
     {
-        // Check if province is null
         if (is_null($province)) {
-            return []; // Return empty array if no province is selected
+            return [];
         }
 
         $json = Storage::get('locations.json');

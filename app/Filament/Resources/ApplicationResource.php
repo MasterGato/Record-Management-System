@@ -144,23 +144,6 @@ class ApplicationResource extends Resource
 
                 Tables\Columns\TextColumn::make('Controlnumber'),
             ])
-            ->headerActions([
-                Action::make('show_hired_report') // New header action for report
-                    ->label('Show Hired Applicants Report') // Button label
-                    ->action(function () {
-                        $hiredApplications = Application::where('status', 'hired')->with('applicant')->get();
-
-                        // Create the PDF view with the hired applications data
-                        $pdf = Pdf::loadView('reports.hired_applicants_report', compact('hiredApplications'))
-                            ->setPaper('a4', 'portrait'); // Set paper size and orientation
-
-                        // Stream the PDF download
-                        return response()->streamDownload(
-                            fn() => print($pdf->output()),
-                            'hired_applicants_report.pdf'
-                        );
-                    })
-            ])
             ->actions([
                 ArchiveAction::make()
                     ->hiddenLabel()

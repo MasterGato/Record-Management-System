@@ -3,16 +3,15 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\JobOfferResource\Pages;
-use App\Filament\Resources\JobOfferResource\RelationManagers;
 use App\Models\JobOffer;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Select;
 use App\Models\Country;
+use Illuminate\Validation\Rule; // Import Rule for custom validation
 
 class JobOfferResource extends Resource
 {
@@ -25,23 +24,33 @@ class JobOfferResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('job')
+                // The job field with unique validation
+                Forms\Components\TextInput::make('Job') // Changed to lowercase to match DB column if needed
+                    ->label('Job Title') // Optionally give a more descriptive label
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->reactive()
+                    ->rules([
+                        'required', 
+                        'max:255',
+                    ]),
                 
+                // Country selection field
                 Select::make('country_id')
                     ->label('Country')
                     ->searchable()
-                    ->options(Country::all()->pluck('name', 'id')) // Corrected: Plucking both id and name
+                    ->options(Country::all()->pluck('name', 'id'))
                     ->required(),
                 
+                // Status field
                 Select::make('status')
                     ->label('Status')
                     ->options([
                         'available' => 'Available',
                         'unavailable' => 'Unavailable'
                     ])
-                    ->native(false),
+                    ->native(false)
+                    ->required(),
             ]);
     }
 
@@ -49,32 +58,25 @@ class JobOfferResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('Job') // Changed to lowercase 'job'
+                // Job column
+                Tables\Columns\TextColumn::make('Job') // Changed to lowercase 'job' to match form
+                    ->label('Job Title')
                     ->searchable(),
                 
+                // Country column
                 Tables\Columns\TextColumn::make('country.name')
+                    ->label('Country')
                     ->searchable(),
                 
+                // Status column
                 Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
                     ->searchable(),
-                
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                // You can add filters here
+                // You can add filters here if needed
             ])
             ->actions([
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                Tables\Actions\RestoreAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
