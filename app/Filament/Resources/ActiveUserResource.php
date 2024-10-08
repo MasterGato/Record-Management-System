@@ -13,6 +13,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Section;
+use Filament\Tables\Filters\SelectFilter;
 
 class ActiveUserResource extends Resource
 {
@@ -57,15 +59,17 @@ class ActiveUserResource extends Resource
                 ->searchable(),
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()
-                ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+                ->sortable(),
             Tables\Columns\TextColumn::make('updated_at')
                 ->dateTime()
                 ->sortable()
-                ->toggleable(isToggledHiddenByDefault: true),
+               
             ])
             ->filters([
-                //
+                SelectFilter::make('user_id') // Add the branch filter
+                    ->label('User')
+                    ->options(User::pluck('status', 'id')) // List of branches
+                    ->searchable(),
             ])
             ->actions([
                
@@ -76,6 +80,7 @@ class ActiveUserResource extends Resource
                 ]),
             ]);
     }
+    
 
     public static function getRelations(): array
     {
