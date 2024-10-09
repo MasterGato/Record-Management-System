@@ -1,4 +1,4 @@
-<?php
+<?Php 
 
 namespace App\Filament\Widgets;
 
@@ -8,15 +8,14 @@ use App\Models\Branch;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class StatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
         $user = Auth::user();
-        $isAdmin = $user->role === 'admin'; // Assuming you have a role attribute on the User model
-        $branchId = $user->branch_id;
+        $isAdmin = $user->role === 'admin'; // Check if the user is an admin
+        $branchId = $user->branch_id; // Get the user's branch ID
 
         // Overall data if admin, or filtered data for branch if not admin
         $applicantsCount = $isAdmin ? Applicant::count() : Applicant::where('branch_id', $branchId)->count();
@@ -29,6 +28,7 @@ class StatsOverview extends BaseWidget
                 ->description('Branch of the logged-in user')
                 ->descriptionIcon('heroicon-m-flag')
                 ->color('info'),
+
             Stat::make('Branches', Branch::count())
                 ->description('Number of Branches')
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
@@ -52,8 +52,6 @@ class StatsOverview extends BaseWidget
                 ->descriptionIcon('heroicon-m-arrow-trending-up')
                 ->color('success')
                 ->chart($this->generateChartData($hiredApplicantsCount)),
-
-
         ];
     }
 
