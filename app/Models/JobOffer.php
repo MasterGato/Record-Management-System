@@ -9,7 +9,7 @@ class JobOffer extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'job',
+        'Job',
         'status',
         'country_id'
     ];

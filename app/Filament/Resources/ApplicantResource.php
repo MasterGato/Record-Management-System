@@ -82,7 +82,7 @@ class ApplicantResource extends Resource
                             ->required(),
                         
                         // Implementing dynamic location fields
-                        Select::make('region_id')
+                        Select::make('Region')
                             ->label('Region')
                             ->options(function () {
                                 return Region::all()->pluck('region_name', 'id');
@@ -95,10 +95,10 @@ class ApplicantResource extends Resource
                             })
                             ->required(),
 
-                        Select::make('province_id')
+                        Select::make('Province')
                             ->label('Province')
                             ->options(function (callable $get) {
-                                $regionId = $get('region_id');
+                                $regionId = $get('Region');
                                 return Province::where('region_id', $regionId)->pluck('province_name', 'id');
                             })
                             ->reactive() // Make it reactive
@@ -108,10 +108,10 @@ class ApplicantResource extends Resource
                             })
                             ->required(),
 
-                        Select::make('municipality_id')
+                        Select::make('City')
                             ->label('Municipality')
                             ->options(function (callable $get) {
-                                $provinceId = $get('province_id');
+                                $provinceId = $get('Province');
                                 return Municipality::where('province_id', $provinceId)->pluck('municipality_name', 'id');
                             })
                             ->reactive() // Make it reactive
@@ -120,10 +120,10 @@ class ApplicantResource extends Resource
                             })
                             ->required(),
 
-                        Select::make('barangay_id')
+                        Select::make('Brgy')
                             ->label('Barangay')
                             ->options(function (callable $get) {
-                                $municipalityId = $get('municipality_id');
+                                $municipalityId = $get('City');
                                 return Barangay::where('municipality_id', $municipalityId)->pluck('barangay_name', 'id');
                             })
                             ->required(),
@@ -205,11 +205,9 @@ class ApplicantResource extends Resource
                     ->sortable(),
                     
             ])
+            
             ->filters([
-                SelectFilter::make('branch_id') // Add the branch filter
-                    ->label('Branch')
-                    ->options(Branch::pluck('branchname', 'id')) // List of branches
-                    ->searchable(),
+                // Add filters if needed
             ])
             ->actions([
                 EditAction::make(),

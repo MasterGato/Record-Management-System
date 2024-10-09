@@ -11,7 +11,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Forms\Components\Select;
 use App\Models\Country;
-use Illuminate\Validation\Rule; // Import Rule for custom validation
 
 class JobOfferResource extends Resource
 {
@@ -24,32 +23,23 @@ class JobOfferResource extends Resource
     {
         return $form
             ->schema([
-                // The job field with unique validation
-                Forms\Components\TextInput::make('Job') // Changed to lowercase to match DB column if needed
-                    ->label('Job Title') // Optionally give a more descriptive label
+                Forms\Components\TextInput::make('Job') // Ensure this matches the DB column name
+                    ->label('Job Title')
                     ->required()
-                    ->maxLength(255)
-                    ->reactive()
-                    ->rules([
-                        'required', 
-                        'max:255',
-                    ]),
-                
-                // Country selection field
+                    ->maxLength(255),
+
                 Select::make('country_id')
                     ->label('Country')
                     ->searchable()
                     ->options(Country::all()->pluck('name', 'id'))
                     ->required(),
                 
-                // Status field
                 Select::make('status')
                     ->label('Status')
                     ->options([
                         'available' => 'Available',
                         'unavailable' => 'Unavailable'
                     ])
-                    ->native(false)
                     ->required(),
             ]);
     }
@@ -58,23 +48,17 @@ class JobOfferResource extends Resource
     {
         return $table
             ->columns([
-                // Job column
-                Tables\Columns\TextColumn::make('Job') // Changed to lowercase 'job' to match form
+                Tables\Columns\TextColumn::make('Job') // Ensure this matches the DB column name
                     ->label('Job Title')
                     ->searchable(),
-                
-                // Country column
+
                 Tables\Columns\TextColumn::make('country.name')
                     ->label('Country')
                     ->searchable(),
-                
-                // Status column
+
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->searchable(),
-            ])
-            ->filters([
-                // You can add filters here if needed
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -86,13 +70,6 @@ class JobOfferResource extends Resource
             ]);
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            // Add any relations if needed
-        ];
-    }
-
     public static function getPages(): array
     {
         return [
@@ -102,3 +79,4 @@ class JobOfferResource extends Resource
         ];
     }
 }
+
