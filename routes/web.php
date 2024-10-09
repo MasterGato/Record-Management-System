@@ -15,13 +15,13 @@ Route::post('submitForm', [ApplicationController::class, 'submitForm'])->name('s
 
 //Route::get('/applicants-report', [ReportsController::class, 'generateApplicantsReport']);
 
-//Route::get('/hired-applicants-report', [ReportsController::class, 'generateHiredApplicantsReport']);
+Route::get('/hired-applicants-report', [ReportsController::class, 'generateHiredApplicantsReport']);
 
-//Route::get('/rejected-applicants-report', [ReportsController::class, 'generateRejectedApplicantsReport']);
+Route::get('/rejected-applicants-report', [ReportsController::class, 'generateRejectedApplicantsReport']);
 
-//Route::get('/returnee-applicants-report', [ReportsController::class, 'generateReturneeApplicantsReport']);
+Route::get('/returnee-applicants-report', [ReportsController::class, 'generateReturneeApplicantsReport']);
 
-//Route::get('/active-users-report', [ReportsController::class, 'generateActiveUserReport']);
+Route::get('/active-users-report', [ReportsController::class, 'generateActiveUserReport']);
 
 Route::get('/', [ApplicationController::class, 'showForm'])->name('showForm');
 

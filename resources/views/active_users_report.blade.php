@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Applicants Report</title>
+    <title>Active Users Report</title>
     <style>
+        /* Include your CSS styles here */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -28,12 +29,6 @@
             font-size: 20px;
             margin: 0;
         }
-        .header p {
-            text-align: center;
-            font-size: 12px;
-            margin: 0;
-            color: gray;
-        }
         .title-container {
             display: flex;
             justify-content: space-between;
@@ -42,10 +37,6 @@
         .report-title {
             font-weight: bold;
             font-size: 14px;
-        }
-        .report-date {
-            font-size: 12px;
-            color: gray;
         }
         .table-applicants {
             width: 100%;
@@ -61,44 +52,27 @@
         .table-applicants th {
             background-color: #f9f9f9;
         }
-        .report-info {
-            margin-top: 40px;
-            font-weight: bold;
-        }
-
         .prepared-by {
             margin: 0;
-            font-size: 12px; /* Adjust the font size */
-            font-weight: bold; /* Make it bold */
-            color: black; /* Optional: you can adjust the color */
-            margin-bottom: 10px; /* Space below this text */
+            font-size: 12px;
+            font-weight: bold;
+            color: black;
+            margin-bottom: 10px;
         }
-
         .report-info h5 {
             margin: 0;
             font-size: 14px;
             margin-top: 20px;
             text-transform: uppercase;
         }
-
-        .report-info p {
-            margin: 5px 0 0 0;
+        .printed-info {
             font-size: 12px;
-            font-weight: normal;
             color: gray;
-        }
-
-        .total-row {
-            font-weight: bold; /* Make total row bold */
-            background-color: #f9f9f9; /* Optional: add background color */
-        }
-        .currency-sign{
-            font-family: DejaVu Sans !important;
+            margin: 5px 0 0 0;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="header">
             <div>
@@ -107,7 +81,6 @@
         </div>
         <div class="title-container">
             <div class="report-title">ACTIVE USERS REPORT</div>
-            
         </div>
 
         <!-- Table with applicants data -->
@@ -122,30 +95,28 @@
                     <th>Status</th>
                 </tr>
             </thead>
-            @foreach($employees as $application)
+            <tbody>
+            @foreach($employees as $employee)
                 <tr>
-                    <td>{{ $application->id }}</td> <!-- Assuming 'id' is the primary key in Application -->
-                    <td>{{ $application->firstname . $application->middlename . $application->lastname ?? 'N/A' }}</td> <!-- Using the accessor method to get full name -->
-                    <td>{{ $application->contact }}</td>
-                    <td>{{ $application->role }}</td>
-                    <td>{{ $application->branch->branchname }}</td>
-                    <td>{{ $application->status }}</td>
+                    <td>{{ $employee->id }}</td>
+                    <td>{{ $employee->firstname . ' ' . $employee->middlename . ' ' . $employee->lastname }}</td>
+                    <td>{{ $employee->contact }}</td>
+                    <td>{{ $employee->role }}</td>
+                    <td>{{ $employee->branch->branchname }}</td>
+                    <td>{{ $employee->status }}</td>
                 </tr>
             @endforeach
             </tbody>
-            
         </table>
-        <div class="report-info">
-            <p class="prepared-by">Prepared By:</p>
-            <h5>{{ Auth::user()->firstname. " " . Auth::user()->middlename. " " . Auth::user()->lastname}}</h5>
-            <p>{{ Auth::user()->role }}</p>
+        
+        <div class="prepared-by">Prepared By:</div>
+        <h5>{{ Auth::user()->firstname . " " . Auth::user()->middlename . " " . Auth::user()->lastname }}</h5>
+        <p>{{ Auth::user()->role }}</p>
+
+        <div class="printed-info">
+            <p>Printed Date: {{ date('F j, Y') }}</p>
+            <p>Printed Time: {{ \Carbon\Carbon::now('Asia/Manila')->format('h:i A') }}</p>
         </div>
-         <div class="printed-info">
-            <p style="font-size: 12px; color: gray; margin: 5px 0 0 0;">Printed Date: {{ date('F j, Y') }}</p>
-            <p style="font-size: 12px; color: gray; margin: 0;">Printed Time: {{ \Carbon\Carbon::now('Asia/Manila')->format('h:i A') }}</p>
-         </div>
-
     </div>
-
 </body>
 </html>

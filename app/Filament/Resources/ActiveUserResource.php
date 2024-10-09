@@ -19,7 +19,8 @@ use Filament\Tables\Filters\SelectFilter;
 class ActiveUserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+   
+    protected static ?string $modelLabel = 'Active User';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Reports';
 
@@ -80,7 +81,10 @@ class ActiveUserResource extends Resource
                 ]),
             ]);
     }
-    
+    public static function getEloquentQuery(): Builder
+    {
+        return static::getModel()::query()->where('Status', 'active');
+    }
 
     public static function getRelations(): array
     {

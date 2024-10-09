@@ -12,12 +12,15 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ListofApplicantsResource extends Resource
 {
     protected static ?string $model = Applicant::class;
 
+
+    protected static ?string $modelLabel = 'List of Applicants';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Reports';
 
@@ -32,9 +35,33 @@ class ListofApplicantsResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                //
+        ->columns([
+            TextColumn::make('Firstname')
+                ->label('First Name')
+                ->sortable()
+                ->searchable(),
+                TextColumn::make('Middleinitial')
+                ->label('Middle Initial')
+                ->sortable()
+                ->searchable(),
+
+            TextColumn::make('Lastname')
+                ->label('Last Name')
+                ->sortable()
+                ->searchable(),
+
+                TextColumn::make('Email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('branch.branchname')
+                    ->label('Branch')
+                    ->searchable()
+                    ->sortable(),
+                    
             ])
+            
             ->filters([
                 //
             ])

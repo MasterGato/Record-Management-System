@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ReturneeApplicantsResource extends Resource
 {
-    protected static ?string $model = Application::class;
+    protected static ?string $model = ReturneeApplicantsResource::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Reports';

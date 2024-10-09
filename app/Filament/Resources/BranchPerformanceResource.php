@@ -18,6 +18,7 @@ class BranchPerformanceResource extends Resource
 {
     protected static ?string $model = Branch::class;
 
+    protected static ?string $modelLabel = 'Branch Performance';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = 'Reports';
 
@@ -32,9 +33,24 @@ class BranchPerformanceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                //
-            ])
+        ->columns([
+            Tables\Columns\TextColumn::make('branchname')
+                ->label('Branch Name')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('region')
+                ->label('Region')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('province')
+                ->label('Province')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('city')
+                ->label('City')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('status')
+                ->label('Status')
+                ->sortable()
+                ->searchable(),
+        ])
             ->filters([
                 //
             ])
