@@ -21,11 +21,12 @@ class ReportsController extends Controller
     
     public function generateHiredApplicantsReport()
     {
-
-        $applications = Application::with('Applicant')->where('status', 'hired')->get();
-
-        $pdf = Pdf::loadView('hired_applicants_report', ['applications' => $applications]);
-
+        // Get hired applicants data
+        $hiredApplications = Application::with('Applicant')->where('status', 'hired')->get();
+    
+        // Pass the data to the view
+        $pdf = Pdf::loadView('hired_applicants_report', ['hiredApplications' => $hiredApplications]);
+    
         return $pdf->stream('hired_applicants_report.pdf');
     }
     public function generateRejectedApplicantsReport()
