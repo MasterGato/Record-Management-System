@@ -102,54 +102,54 @@ class DocumentResource extends Resource
                     ->label('Document ID')  // Set the label for the column
                     ->sortable()  // Allows sorting by this column
                     ->searchable(),  // Allows searching by this column
-    
+
                 Tables\Columns\TextColumn::make('applicant.Firstname')
                     ->label('Applicant')
                     ->searchable()
                     ->sortable(),
-    
+
                 Tables\Columns\TextColumn::make('valid_id')
                     ->label('Valid ID')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME)) // Show only the filename
                     ->url(fn($record) => $record->valid_id ? Storage::url($record->valid_id) : null)
                     ->html() // Allows HTML rendering
                     ->formatStateUsing(fn($state, $record) => $record->valid_id ? '<a href="' . Storage::url($record->valid_id) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
-                    
+
                 Tables\Columns\TextColumn::make('birth_certificate')
                     ->label('Birth Certificate')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->birth_certificate ? Storage::url($record->birth_certificate) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->birth_certificate ? '<a href="' . Storage::url($record->birth_certificate) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
-                    
+
                 Tables\Columns\TextColumn::make('medical_certificate')
                     ->label('Medical Certificate')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->medical_certificate ? Storage::url($record->medical_certificate) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->medical_certificate ? '<a href="' . Storage::url($record->medical_certificate) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
-                    
+
                 Tables\Columns\TextColumn::make('nbi_clearance')
                     ->label('NBI Clearance')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->nbi_clearance ? Storage::url($record->nbi_clearance) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->nbi_clearance ? '<a href="' . Storage::url($record->nbi_clearance) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
-                    
+
                 Tables\Columns\TextColumn::make('marriage_certificate')
                     ->label('Marriage Certificate')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->marriage_certificate ? Storage::url($record->marriage_certificate) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->marriage_certificate ? '<a href="' . Storage::url($record->marriage_certificate) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
-                    
+
                 Tables\Columns\TextColumn::make('passport')
                     ->label('Passport')
                     ->formatStateUsing(fn($state) => pathinfo($state, PATHINFO_FILENAME))
                     ->url(fn($record) => $record->passport ? Storage::url($record->passport) : null)
                     ->html()
                     ->formatStateUsing(fn($state, $record) => $record->passport ? '<a href="' . Storage::url($record->passport) . '" target="_blank">' . pathinfo($state, PATHINFO_FILENAME) . '</a>' : ''), // Open in new tab
-                    
+
                 Tables\Columns\TextColumn::make('status')->label('Status'),
             ])
             ->filters([

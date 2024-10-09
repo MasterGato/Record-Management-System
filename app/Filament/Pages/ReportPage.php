@@ -13,6 +13,8 @@ use Filament\Actions\Action;
 
 class ReportPage extends Page
 {
+
+
     protected static ?string $navigationLabel = 'Report Page';
     protected static ?int $navigationSort = 9;
     protected static string $view = 'filament.pages.report-page';
@@ -21,13 +23,13 @@ class ReportPage extends Page
     protected function getActions(): array
     {
         return [
-            
-         
+
+
         ];
     }
 
     public function generateActiveUserReport()
     {
-       
+
     }
 }

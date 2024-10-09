@@ -34,25 +34,37 @@ class Document extends Model
      *
      * @return bool
      */
+    // In Document.php
     protected static function booted()
     {
         static::updated(function ($document) {
-
             // Check if the status is 'completed'
             if ($document->status === 'completed') {
                 Log::info('Document status updated to completed', [
-                    'document_id' => $document->status,
+                    'document_id' => $document->id,
                     'applicant_id' => $document->applicant_id
                 ]);
 
                 // Get the applicant's application(s)
-                $applications = Application::where('applicant_id', $document->applicant_id) // Onlys assign control numbers to applications that don't have one yet
+                $application = Application::where('applicant_id', $document->applicant_id)
+                    ->whereNull('Controlnumber') // Only assign control numbers to applications that don't have one yet
                     ->first();
 
+                if ($application) {
+                    // Generate a control number (example implementation)
+                    $controlNumber = 'CN-' . strtoupper(uniqid());
 
-                $applications->update([
-                    'status' => 'completed', // Optionally, update application status too
-                ]);
+                    // Update the application with the control number and change status to 'completed'
+                    $application->update([
+                        'Controlnumber' => $controlNumber,
+                        'status' => 'completed', // Optionally, update application status too
+                    ]);
+
+                    Log::info('Control number generated and assigned', [
+                        'control_number' => $controlNumber,
+                        'application_id' => $application->id
+                    ]);
+                }
             }
         });
     }

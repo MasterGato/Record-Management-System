@@ -12,16 +12,16 @@ use Filament\Panel;
 class User extends Authenticatable implements FilamentUser
 {
     use Notifiable;
-   const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive'; 
-  
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
+
     const ROLE_ADMIN = 'ADMIN';
     const ROLE_MANAGER = 'MANAGER';
     const ROLE_CLERK = 'CLERK';
-   
 
 
-    const ROLE_DEFAULT =self::ROLE_ADMIN;
+
+    const ROLE_DEFAULT = self::ROLE_ADMIN;
 
     const ROLES = [
         self::ROLE_ADMIN => 'Admin',
@@ -34,8 +34,7 @@ class User extends Authenticatable implements FilamentUser
     }
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->isAdmin() || $this->isManager() ||  $this->isApplicant()||  $this->isUser()||  $this->isClerk();
- 
+        return $this->isAdmin() || $this->isManager() ||   $this->isClerk();
     }
     public function isAdmin()
     {
